@@ -239,12 +239,17 @@ L'application à déployer est un multiplicateur :
     - nom : `${PRENOM}-add-lambda`
     - Techno : `Node.js 18.x`
     - Activer `Activer l'URL de fonction` avec l'authentification `NONE` afin d'avoir accès à la fonction depuis un navigateur
-    - code source :
+    - Code source :
 ```javascript 
 export const handler = async(event) => {
     console.log("Received event: ", event);
     const response = {
         statusCode: 200,
+        headers: {
+            "Access-Control-Allow-Headers" : "Content-Type",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "OPTIONS,GET"
+        },
         body: '{"result":"' + (Number(event["queryStringParameters"]['val1']) + Number(event["queryStringParameters"]['val2'])) +'"}',
     };
     return response;
