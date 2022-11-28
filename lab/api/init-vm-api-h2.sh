@@ -1,0 +1,17 @@
+#!/bin/bash
+sudo apt update
+sudo apt -y install openjdk-11-jdk mariadb-client
+
+sudo mkdir /usr/local/applications
+sudo chmod 777 /usr/local/applications
+cd /usr/local/applications
+
+
+echo "Downloding API app"
+curl https://gitlab.com/ecam/lab1/-/raw/main/lab/api/bplace-h2.jar?inline=false --output bplace.jar
+
+chmod +x launch.sh
+nohup java -jar bplace.jar &
+
+
+echo "API app created"
