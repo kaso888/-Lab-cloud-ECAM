@@ -1,0 +1,39 @@
+stages:
+  - init
+
+create:
+  stage: init
+  image: 
+    name: amazon/aws-cli
+    entrypoint: [""]
+  script:
+    - yum install -y jq
+    - |
+        echo -e "Configure AWS file"
+        mkdir -p ~/.aws
+        echo -e "[lab]\naws_access_key_id=$AWS_ACCESS_KEY_ID\naws_secret_access_key=$AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
+        echo -e "[lab]\nregion=$AWS_DEFAULT_REGION" >> ~/.aws/config
+    - ./user/deleteUser.sh $USERNAME || true
+    - ./user/createUser.sh $USERNAME
+  artifacts:
+    paths:
+      - public/$USERNAME.env
+    expire_in: 1 hour
+  rules:
+    - if: $USERNAME && $ACTION != "DELETE"
+
+clean:
+  stage: init
+  image: 
+    name: amazon/aws-cli
+    entrypoint: [""]
+  script:
+    - yum install -y jq
+    - |
+        echo -e "Configure AWS file"
+        mkdir -p ~/.aws
+        echo -e "[lab]\naws_access_key_id=$AWS_ACCESS_KEY_ID\naws_secret_access_key=$AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
+        echo -e "[lab]\nregion=$AWS_DEFAULT_REGION" >> ~/.aws/config
+    - ./user/deleteUser.sh $USERNAME
+  rules:
+    - if: $USERNAME && $ACTION == "DELETE"
