@@ -41,11 +41,9 @@ secret_key_encoded=$(rawurlencode $secret_key)
 
 mkdir -p public
 
-gitpod_url="https://gitpod.io/#AWS_ACCESS_KEY_ID=${access_key_id},AWS_SECRET_ACCESS_KEY=${secret_key_encoded},AWS_DEFAULT_REGION=eu-west-3/https://gitlab.com/ecam/lab1/-/tree/main"
 
 aws_console_url="https://${AWS_GLOBAL_ACCOUNT}.signin.aws.amazon.com/console"
 
-echo "Gitpod : <a href="${gitpod_url}" >${gitpod_url}</a>" >> public/${user_name}.env
 echo "" >> public/${user_name}.env
 
 echo "Console AWS : " >> public/${user_name}.env
