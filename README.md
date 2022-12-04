@@ -59,8 +59,6 @@ users-->ec2_web
 
 *Remarque :* Cette architecture ne respecte pas les bonnes pratiques. En principe, `EC2 API` et `RDS Maria DB` aurait dû être déployés dans des subnets privés.
 
-## Gestion des utilisateurs
-
 ## Connexion à la console AWS
 - Se connecter à la console avec les informations communiquées
 - Sélectionner la zone Paris (eu-west-3)
@@ -82,6 +80,7 @@ Le service permet d'utiliser sept moteurs : Amazon Aurora compatible avec MySQL,
         - Modèle : **Offre gratuite** - db.t3.micro
         - Identifiant principal : `admin`
         - Mot de passe : `admin123!`
+        - Stockage alloué : 20Go
         - Groupes de sécurité VPC existants : sélectionner `db-sg`
 - La création de l'instance va prendre 5/10 minutes. Passer à la suite.
 
@@ -99,7 +98,7 @@ Le service permet d'utiliser sept moteurs : Amazon Aurora compatible avec MySQL,
 	- Paire de clé : `admin-key`
 	- Groupe de sécurité (Pare-feu) : `web-sg`
 - Après quelques minutes : l'instance est disponible
-- Accéder à la description de l'instance (Menu à gauche > instances > Cliquer sur le nom de votre instance)
+- Accéder à la description de l'instance (Menu à gauche > Instances > Cliquer sur l'id de votre instance)
     - Noter la valeur de `DNS IPv4 public`. Cet URL vous permettra d'accéder à l'API via votre navigateur
     - Vérifier que l'état est `En cours d'exécution`
 - Installation de l'application API Java
@@ -164,7 +163,7 @@ Les deux instances EC2 et la base de données ont été créées mais elles ne c
 
         </details>
     - Après correction, redémarrer le serveur Nginx : `sudo systemctl restart nginx.service`.
-- Après quelques instants, l'application Angular doit être fonctionnel.
+- Après quelques instants, l'application Angular doit être fonctionnelle.
     - Vérifier son fonctionnement en accédant via un navigateur à `http://${DNS_IPV4_PUBLIC_WEB}`
 
 
@@ -256,7 +255,7 @@ export const handler = async(event) => {
 };
 ```
 - Depuis la page de la fonction, récupérer l'`URL de fonction`
-- Via un navigateur accéder à l'url `https://${URL_FONCTION}?val1=1&val2=14`
+- Via un navigateur, accéder à l'url `https://${URL_FONCTION}?val1=1&val2=14`
 - Modifier la fonction pour réaliser une multiplication au lieu d'une addition
 
 ## Déploiemet d'un site web static via AWS S3
