@@ -6,26 +6,28 @@
 - déployer les instances EC2
 - Personnaliser les instances lors du primo déploiement (cloud init)
 
-## Mise en place de l'environnement Terraform
+## Initialisation de l'environnement
+### Mise en place de l'environnement Terraform
 - Dans le repository Gitlab, lancer l'outil gitpod
 - Accepter la connexion avec votre compte gitlab
 - vous devriez basculer sur une url du type https://ecam-lab-r6h491jsld3.ws-eu77.gitpod.io/
 
-## Test installation Terraform
+### Test installation Terraform
 - Pour gagner du temps dans l'exécution du lab, nous avons préinstaller dans un docker file la version du client Terraform
 - Ouvrir un invite de commande puis lancer la commande permettant d'obtenir la version de Terraform
 Vous devriez obtenir :
 	- Terraform v1.3.6
 	- on linux_amd64
 
-## Initialisation du workspace
+### Initialisation du workspace
 - dans le terminal de la session Gitpod, créer un répertoire workspace_aws puis se placer dans ce répertoire
 - exporter les variables d'environnement suivante avec les contenus communiqués au démarrage du LAB :
 	- AWS_ACCESS_KEY_ID
 	- AWS_SECRET_ACCESS_KEY
 Ces variables constituent les crendentials pour joindre l'api AWS depuis Terraform
 
-## Création du provider AWS
+## Provisioning des ressources via Terraform
+### Création du provider AWS
 - dans le répertoire workspace, créer un fichier provider.tf avec les déclarations suivantes :
 	- de la version de Terraform
 	- de la version du provider AWS
@@ -50,7 +52,7 @@ Ces variables constituent les crendentials pour joindre l'api AWS depuis Terrafo
 	Terraform has been successfully initialized!
 	```
 
-## Création des groupes de sécurité pour les instances ec2 à déployer
+### Création des groupes de sécurité pour les instances ec2 à déployer
 - Créer un nouveau fichier terraform pour déclarer 4 groupes de sécurité :
 	- 1 groupe de sécurité autorisant le protocole TCP, ports 443, 80 et 22 de l'instance web
 	- 1 groupe de sécurité autorisant le protocole TCP pour les ports 8080 et 22 de l'instance api
@@ -62,7 +64,7 @@ Ces variables constituent les crendentials pour joindre l'api AWS depuis Terrafo
 - Une fois la validation effectuée, lancer la commande d'application de la configuration en confirmant l'action lorsque demandé
 - Se rendre sur la console AWS et constater l'apparition des nouvelles ressources
 
-## Création de l'instance EC2 API server
+### Création de l'instance EC2 API server
 - Pour personnaliser l'installation de l'instance ec2, créer un script user-data-api.sh et ajouter les lignes suivantes :
 	```
 	#!/bin/bash
@@ -83,7 +85,7 @@ Ces variables constituent les crendentials pour joindre l'api AWS depuis Terrafo
 - Se rendre sur la console AWS et constater l'apparition de la nouvelle ressource
 - Mémoriser l'ip publique de l'instance créée
 
-## Récupération d'output pour l'instance EC2 API Server
+### Récupération d'output pour l'instance EC2 API Server
 Pour pouvoir configurer le lien entre l'instance Web et l'instance API, il faut que vous récupériez avec Terraform l'adresse ip publique en IPV4 de l'instance
 API précédemment créée. Pour cela :
 - Créer un nouveau fichier terraform et déclarer la sortie suivante de l'instance API Server :
@@ -99,7 +101,7 @@ API précédemment créée. Pour cela :
 	instance_api_server_public_ip = "13.37.240.116"
 	```
 
-## Création de l'instance EC2 Web server
+### Création de l'instance EC2 Web server
 - Pour personnaliser l'installation de l'instance ec2, créer un script user-data-web.sh et ajoute les commandes suivantes en remplaçant 
  ${DNS_IPV4_PUBLIC_API} par l'adresse ip obtenue à l'étape précédente
 	```
@@ -122,7 +124,7 @@ API précédemment créée. Pour cela :
 - Une fois la validation effectuée, lancer la commande d'application de la configuration en confirmant l'action lorsque demandé
 - Se rendre sur la console AWS et constater l'apparition de la nouvelle ressource
 
-## Création de l'instance EC2 Data server
+### Création de l'instance EC2 Data server
 - Créer un nouveau fichier terraform et déclarer la ressource ec2 data server avec les caractéristiques suivantes :
 	- type de la ressource : aws_instance
 	- nom de la ressource : data_server (par exemple, doit être un nom unique dans le même workspace terraform)
@@ -135,21 +137,7 @@ API précédemment créée. Pour cela :
 - Une fois la validation effectuée, lancer la commande d'application de la configuration en confirmant l'action lorsque demandé
 - Se rendre sur la console AWS et constater l'apparition de la nouvelle ressource
 
-## Connexion entre l'application Angular et l'API
-- Via `EC2 Instance Connector`, se connecter au terminal de l'instance EC2 **Web**
-    - Accéder aux logs de l'application avec la commande `tail -100 /var/log/nginx/nginx_error.log`.
-    - Identifier le problème et corriger le fichier de configuration de l'application `/etc/nginx/sites-available/default`.
-        <details>
-        <summary>Solution</summary>
-        
-        L'URL de l'API est incorrecte (`localhost`). Il faut la remplacer avec le `DNS IPv4 public` de l'instance API.
-        Il faut utiliser un éditeur (`vim` ou `nano`) pour éditer le fichier ou exécuter la commande `sed -i "s/localhost/${DNS_IPV4_PUBLIC_API}/" /etc/nginx/sites-available/default`.
-
-        </details>
-    - Après correction, redémarrer le serveur Nginx : `sudo systemctl restart nginx.service`.
-- Après quelques instants, l'application Angular doit être fonctionnel.
-    - Vérifier son fonctionnement en accédant via un navigateur à `http://${DNS_IPV4_PUBLIC_WEB}`
-
+## Destruction des ressources via Terraform
 ## Libération des ressources
 - Lancer la commande de destruction de toutes les ressources terraform
 	- vous devriez avoir 7 ressources à Supprimer
