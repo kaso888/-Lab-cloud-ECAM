@@ -247,6 +247,7 @@ L'application à déployer est un multiplicateur :
 - Créer une première fonction
     - nom : `${PRENOM}-add-lambda`
     - Techno : `Node.js 18.x`
+    - Role : utiliser un role existant : `xavier-add-lambda-role-5wn8pt93`
     - Activer `Activer l'URL de fonction` avec l'authentification `NONE` afin d'avoir accès à la fonction depuis un navigateur
     - Code source :
 ```javascript 
@@ -281,6 +282,7 @@ Il peut être utilisé pour exposer des [sites web static](https://docs.aws.amaz
     - nom : `${PRENOM}-ecam-lab-s3`
     - Region `eu-west-3`
     - Décocher `Bloquer tous les accès publics`
+- Accéder au compartiment et modifier la `Stratégie de compartiment` dans l'onglet `Autorisations`
     - Politique de sécurité
 ```json
 {
