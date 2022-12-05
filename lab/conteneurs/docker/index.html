@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Multiplicateur</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<script>
+  function setAction(form) {
+  const url = 'https://t3yu4on247zkkplv2xmrwcpac40mywqe.lambda-url.eu-west-3.on.aws/?';
+  const andSign = '&';
+  const val1 = 'val1='+form.val1.value;      
+  const val2 = 'val2='+form.val2.value;
+  const newUrl = url+val1+andSign+val2;
+
+  fetch(
+    newUrl,
+    {            
+        headers: { "Content-Type": "application/json" },            
+        method: "GET"
+    }
+   )
+  .then(data => data.json())
+  .then((json) => {
+    alert("Résultat = " + JSON.stringify(json.result));
+    document.getElementById("form").reset();     
+  });
+  return false;
+}
+</script>
+
+<body>
+    <form onsubmit="return setAction(this)" class="form-example">
+        <h1>Multiplicateur</h1>
+        <div class="form-example">
+          <label for="val1">Valeur 1 : </label>
+          <input type="number" name="val1" id="val1" required>
+        </div>
+        <br />
+        <div class="form-example">
+          <label for="val2">Valeur 2 : </label>
+          <input type="number" name="val2" id="val2" required>
+        </div>
+        <br />
+        <div class="form-example">
+          <input type="submit" value="Multiplier">
+        </div>
+      </form>
+</body>
+
+</html>
