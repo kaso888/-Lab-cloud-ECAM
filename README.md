@@ -306,3 +306,7 @@ Il peut être utilisé pour exposer des [sites web static](https://docs.aws.amaz
 - Charger dans le bucket le fichier `s3/index.html`
 - Accéder au fichier chargé sur S3 et cliquer sur l'`URL de l'objet`. Un onglet s'ouvre avec un formulaire contenant `Valeur 1` et `Valeur 2`.
 - Tester puis corriger le fichier `index.html`
+
+### Nettoyage
+- Supprimer le fichier présent dans le compatiment S3 puis supprimer le compartiment
+- Supprimer la fonction Lambda
