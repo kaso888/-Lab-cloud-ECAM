@@ -1,0 +1,12 @@
+---
+# Source: playlogssearchssaweb/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: example-web-service
+spec:
+  selector:
+    component: example-web
+  ports:
+    - name: example-web-service
+      port: 80

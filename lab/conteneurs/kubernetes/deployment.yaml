@@ -1,0 +1,37 @@
+---
+# Source: playlogssearchssaweb/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-web-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: example-web
+  template:
+    metadata:
+      labels:
+        component: example-web
+    spec:
+      containers:
+        - name: example-web
+          image: "registry/nom-image:1.0"
+          resources:
+            requests:
+              memory: 100Mi
+              cpu: 100m
+            limits:
+              memory: 500Mi
+              cpu: 250m
+          ports:
+            - containerPort: 80
+          imagePullPolicy: Always
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80

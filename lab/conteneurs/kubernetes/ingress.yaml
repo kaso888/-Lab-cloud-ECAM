@@ -1,0 +1,18 @@
+---
+# Source: playlogssearchssaweb/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: example-web-ingress
+spec:
+  rules:
+  - host: TODO
+    http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: example-web-service
+              port:
+                number: 80
