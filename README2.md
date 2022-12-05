@@ -33,7 +33,7 @@ Ces variables constituent les crendentials pour joindre l'api AWS depuis Terrafo
 - dans l'invite de commande de gitpod, lancer d'initialisation de l'environnement terraform
 	- Vous devriez obtenir l'output suivant :
 	
-	Initializing the backend...
+	```Initializing the backend...
 
 	Initializing provider plugins...
 	- Finding hashicorp/aws versions matching "~> 4.16"...
@@ -45,7 +45,7 @@ Ces variables constituent les crendentials pour joindre l'api AWS depuis Terrafo
 	so that Terraform can guarantee to make the same selections by default when
 	you run "terraform init" in the future.
 
-	Terraform has been successfully initialized!
+	Terraform has been successfully initialized!```
 
 ## Création des groupes de sécurité pour les instances ec2 à déployer
 - Créer un nouveau fichier terraform pour déclarer 4 groupes de sécurité :
@@ -61,8 +61,8 @@ Ces variables constituent les crendentials pour joindre l'api AWS depuis Terrafo
 
 ## Création de l'instance EC2 Web server
 - Pour personnaliser l'installation de l'instance ec2, créer un script user-data-web.sh et ajoute la commande suivante :
-	#!/bin/bash
-	curl https://gitlab.com/ecam/lab/-/raw/main/lab/web/init-vm-web.sh | bash
+	```#!/bin/bash
+	curl https://gitlab.com/ecam/lab/-/raw/main/lab/web/init-vm-web.sh | bash```
 
 - Créer un nouveau fichier terraform et déclarer la ressource ec2 web server avec les caractéristiques suivantes :
 	- type de la ressource : aws_instance
@@ -79,8 +79,8 @@ Ces variables constituent les crendentials pour joindre l'api AWS depuis Terrafo
 
 ## Création de l'instance EC2 API server
 - Pour personnaliser l'installation de l'instance ec2, créer un script user-data-api.sh et ajouter les lignes suivantes :
-	#!/bin/bash
-	curl https://gitlab.com/ecam/lab/-/raw/main/lab/api/init-vm-api-h2.sh | bash
+	```#!/bin/bash
+	curl https://gitlab.com/ecam/lab/-/raw/main/lab/api/init-vm-api-h2.sh | bash```
 
 - Créer un nouveau fichier terraform et déclarer la ressource ec2 api server avec les caractéristiques suivantes :
 	- type de la ressource : aws_instance
