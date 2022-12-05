@@ -166,6 +166,16 @@ Les deux instances EC2 et la base de données ont été créées mais elles ne c
 - Après quelques instants, l'application Angular doit être fonctionnelle.
     - Vérifier son fonctionnement en accédant via un navigateur à `http://${DNS_IPV4_PUBLIC_WEB}`
 
+## Nettoyage
+Supprimer les ressources créées :
+- RDS 
+    - Sur la page listant les bases, sélectionner la base et cliquer sur `Modifier` > `Supprimer`
+    - Décocher les cases `Créer un instantané final ?` et `Conserver les sauvegardes automatiques`, et cocher `Je reconnais qu'au moment de la suppression de l'instance, les sauvegardes automatiques, y compris les instantanés système et la récupération à un moment donné, ne seront plus disponibles.`
+    - Supprimer l'instance
+- EC2 
+    - Sur la page listant les instances EC2, sélectionner les instances `${PRENOM}-web-ec2` et `${PRENOM}-api-ec2`
+    - Cliquer sur `Etat de l'instance` > `Résilier`
+
 
 # Lab - Partie 2 - FaaS sur AWS 
 
