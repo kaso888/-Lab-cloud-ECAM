@@ -59,7 +59,7 @@ Ces variables constituent les crendentials pour joindre l'api AWS depuis Terrafo
 - Une fois la validation effectuée, lancer la commande d'application de la configuration en confirmant l'action lorsque demandé
 - Se rendre sur la console AWS et constater l'apparition des nouvelles ressources
 
-## Création de l'instance EC2 web server
+## Création de l'instance EC2 Web server
 - Pour personnaliser l'installation de l'instance ec2, créer un script user-data-web.sh et ajoute la commande suivante :
 	#!/bin/bash
 	curl https://gitlab.com/ecam/lab/-/raw/main/lab/web/init-vm-web.sh | bash
@@ -77,7 +77,7 @@ Ces variables constituent les crendentials pour joindre l'api AWS depuis Terrafo
 - Une fois la validation effectuée, lancer la commande d'application de la configuration en confirmant l'action lorsque demandé
 - Se rendre sur la console AWS et constater l'apparition de la nouvelle ressource
 
-## Création de l'instance EC2 api server
+## Création de l'instance EC2 API server
 - Pour personnaliser l'installation de l'instance ec2, créer un script user-data-api.sh et ajouter les lignes suivantes :
 	#!/bin/bash
 	curl https://gitlab.com/ecam/lab/-/raw/main/lab/api/init-vm-api-h2.sh | bash
@@ -107,6 +107,22 @@ Ces variables constituent les crendentials pour joindre l'api AWS depuis Terrafo
 	- vous devriez avoir une ressource à créer
 - Une fois la validation effectuée, lancer la commande d'application de la configuration en confirmant l'action lorsque demandé
 - Se rendre sur la console AWS et constater l'apparition de la nouvelle ressource
+
+## Connexion entre l'application Angular et l'API
+- Via `EC2 Instance Connector`, se connecter au terminal de l'instance EC2 **Web**
+    - Accéder aux logs de l'application avec la commande `tail -100 /var/log/nginx/nginx_error.log`.
+    - Identifier le problème et corriger le fichier de configuration de l'application `/etc/nginx/sites-available/default`.
+        <details>
+        <summary>Solution</summary>
+        
+        L'URL de l'API est incorrecte (`localhost`). Il faut la remplacer avec le `DNS IPv4 public` de l'instance API.
+        Il faut utiliser un éditeur (`vim` ou `nano`) pour éditer le fichier ou exécuter la commande `sed -i "s/localhost/${DNS_IPV4_PUBLIC_API}/" /etc/nginx/sites-available/default`.
+
+
+        </details>
+    - Après correction, redémarrer le serveur Nginx : `sudo systemctl restart nginx.service`.
+- Après quelques instants, l'application Angular doit être fonctionnel.
+    - Vérifier son fonctionnement en accédant via un navigateur à `http://${DNS_IPV4_PUBLIC_WEB}`
 
 ## Libération des ressources
 - Lancer la commande de destruction de toutes les ressources terraform
