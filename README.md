@@ -158,7 +158,7 @@ Les deux instances EC2 et la base de données ont été créées mais elles ne c
         <summary>Solution</summary>
         
         L'URL de l'API est incorrecte (`localhost`). Il faut la remplacer avec le `DNS IPv4 public` de l'instance API.
-        Il faut utiliser un éditeur (`vim` ou `nano`) pour éditer le fichier ou exécuter la commande `sed -i "s/localhost/${DNS_IPV4_PUBLIC_API}/" /etc/nginx/sites-available/default`.
+        Il faut utiliser un éditeur (`vim` ou `nano`) pour éditer le fichier ou exécuter la commande `sudo sed -i "s/localhost/${DNS_IPV4_PUBLIC_API}/" /etc/nginx/sites-available/default`.
 
 
         </details>
