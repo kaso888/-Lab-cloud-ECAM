@@ -40,8 +40,8 @@ on linux_amd64
 ## Provisioning des ressources via Terraform
 ### Création du provider AWS
 - Dans le répertoire workspace, créer un fichier provider.tf avec les déclarations suivantes :
-	- la version de Terraform
-	- la version du provider AWS
+	- la version minimum de Terraform : 1.2.0
+	- la version minimum du provider AWS : 4.16
 	- provider AWS
 	- la région "eu-west-3"
 - Dans l'invite de commande de gitpod, lancer la commande d'initialisation de l'environnement terraform
