@@ -114,7 +114,7 @@ instance_api_server_public_ip = "13.37.240.116"
 ### Création de l'instance EC2 Web server
 - Pour personnaliser l'installation de l'instance ec2, créer un script user-data-web.sh et ajoute les commandes suivantes en remplaçant 
  ${DNS_IPV4_PUBLIC_API} par l'adresse ip obtenue à l'étape précédente
-	```
+```
 #!/bin/bash
 curl https://gitlab.com/ecam/lab/-/raw/main/lab/web/init-vm-web.sh | bash
 sudo sed -i "s/localhost/${DNS_IPV4_PUBLIC_API}/" /etc/nginx/sites-available/default
