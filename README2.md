@@ -6,7 +6,7 @@
 	- Adresse ip
 	- Protocole
 	- Port
-	- Source / destination
+	- Réseau ou host Source / destination
 - Connaitre les commandes de base Terraform (cf cours précédent)
 - Connaitre la déclaration des ressources principales en Terraform (cf cours précédent)
 
@@ -151,7 +151,7 @@ sudo systemctl restart nginx.service
 - Vous pouvez dérouler les mêmes tests de l'application réalisés pour le lab n°1
 
 ## Destruction des ressources via Terraform
-## Libération des ressources
+### Libération des ressources
 - Lancer la commande de destruction de toutes les ressources terraform
 	- vous devriez avoir 7 ressources à Supprimer
 - Confirmer la commande en entrant yes
@@ -182,5 +182,5 @@ sudo systemctl restart nginx.service
 
 	Destroy complete! Resources: 7 destroyed.
 	```
-## Consultation de la console AWS
+### Consultation de la console AWS
 - Se rendre sur la console AWS et vérifier que vos ressources ont bien été supprimées : à l'état résilié
