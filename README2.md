@@ -103,7 +103,7 @@ API précédemment créée. Pour cela :
 	- public_ip
 - Lancer la commande terraform pour valider la configuration
 - Une fois la validation effectuée, lancer la commande d'application de la configuration en confirmant l'action lorsque demandé
-- Vous devriez onbtenir l'output suivant
+- Vous devriez obtenir l'output suivant
 ```
 Outputs:
 
