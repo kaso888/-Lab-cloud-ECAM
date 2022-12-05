@@ -142,3 +142,33 @@ API précédemment créée. Pour cela :
 - Lancer la commande de destruction de toutes les ressources terraform
 	- vous devriez avoir 7 ressources à Supprimer
 - Confirmer la commande en entrant yes
+- Vous devriez obtenir la sortie suivante :
+	```
+	aws_instance.web_server: Destroying... [id=i-08b759cc1ffca6d0f]
+	aws_instance.db_server: Destroying... [id=i-0944d265e59d2ed85]
+	aws_instance.api_server: Destroying... [id=i-04e47f567f694e901]
+	aws_instance.web_server: Still destroying... [id=i-08b759cc1ffca6d0f, 10s elapsed]
+	aws_instance.db_server: Still destroying... [id=i-0944d265e59d2ed85, 10s elapsed]
+	aws_instance.api_server: Still destroying... [id=i-04e47f567f694e901, 10s elapsed]
+	aws_instance.web_server: Still destroying... [id=i-08b759cc1ffca6d0f, 20s elapsed]
+	aws_instance.api_server: Still destroying... [id=i-04e47f567f694e901, 20s elapsed]
+	aws_instance.db_server: Still destroying... [id=i-0944d265e59d2ed85, 20s elapsed]
+	aws_instance.web_server: Destruction complete after 30s
+	aws_security_group.web-sg: Destroying... [id=sg-052a0569b975be8de]
+	aws_instance.api_server: Still destroying... [id=i-04e47f567f694e901, 30s elapsed]
+	aws_instance.db_server: Still destroying... [id=i-0944d265e59d2ed85, 30s elapsed]
+	aws_security_group.web-sg: Destruction complete after 1s
+	aws_instance.api_server: Destruction complete after 40s
+	aws_instance.db_server: Destruction complete after 40s
+	aws_security_group.api-sg: Destroying... [id=sg-0ef4eb6af1c931c0c]
+	aws_security_group.all-sg: Destroying... [id=sg-04a5db48a035d8dd9]
+	aws_security_group.db-sg: Destroying... [id=sg-0d467f870b1583ddc]
+	aws_security_group.api-sg: Destruction complete after 1s
+	aws_security_group.all-sg: Destruction complete after 1s
+	aws_security_group.db-sg: Destruction complete after 1s
+
+	Destroy complete! Resources: 7 destroyed.
+	```
+## Consultation de la console AWS
+- Se rendre sur la console AWS et vérifier que vos ressources ont bien été supprimées : à l'état résilié
+
