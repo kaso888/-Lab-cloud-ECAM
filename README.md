@@ -303,7 +303,7 @@ Il peut être utilisé pour exposer des [sites web static](https://docs.aws.amaz
     ]
 }
 ```
-- Charger dans le bucket le fichier `s3/index.html`
+- Charger dans le bucket le fichier `s3/index.html` (présent dans ce repo)
 - Accéder au fichier chargé sur S3 et cliquer sur l'`URL de l'objet`. Un onglet s'ouvre avec un formulaire contenant `Valeur 1` et `Valeur 2`.
 - Tester puis corriger le fichier `index.html`
 
