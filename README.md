@@ -52,7 +52,7 @@ users-->ec2_web
 ```
 
 - Sur `EC2 Web` : un serveur NGINX est déployé et écoute sur le port `80`. Il permet de :
-    - Exposer les ressources Angular (html, js, css, etc.) lors de l'accès sur la racine du serveur
+    - Exposer les ressources React (html, js, css, etc.) lors de l'accès sur la racine du serveur
     - Jouer le rôle de reverse proxy pour les API : les appels sur le `\api` sont routées vers l'instance `EC2 API` sur le port `8080`
 - Sur `EC2 API` : une application java est déployée et écoute sur le port `8080`. Elle accède à la base de données `RDS MariaDB`.
 - `RDS Maria DB` est une base de données MariaDB qui écoute sur le port `3306`.
@@ -84,7 +84,7 @@ Le service permet d'utiliser sept moteurs : Amazon Aurora compatible avec MySQL,
         - Groupes de sécurité VPC existants : sélectionner `db-sg`
 - La création de l'instance va prendre 5/10 minutes. Passer à la suite.
 
-## Création d'une VM pour l'application Angular via AWS EC2
+## Création d'une VM pour l'application React via AWS EC2
 
 ### Description de AWS EC2
 [Amazon Elastic Compute Cloud](https://aws.amazon.com/fr/ec2/) ou EC2 est un service permettant à des tiers de louer des serveurs sur lesquels exécuter leurs propres applications web. EC2 permet un déploiement extensible des applications en fournissant une interface web par laquelle un client peut créer des machines virtuelles, c'est-à-dire des instances du serveur, sur lesquelles le client peut charger n'importe quel logiciel de son choix.
@@ -94,19 +94,19 @@ Le service permet d'utiliser sept moteurs : Amazon Aurora compatible avec MySQL,
 - Créer une instance EC2
 	- Nom : `${PRENOM}-web-ec2`
     - Image OS : `Ubuntu 22.04 LTS`
-	- Type d'instance : `t2.micro`
+	- Type d'instance : `t3.micro`
 	- Paire de clé : `admin-key`
 	- Groupe de sécurité (Pare-feu) : `web-sg`
 - Après quelques minutes : l'instance est disponible
 - Accéder à la description de l'instance (Menu à gauche > Instances > Cliquer sur l'id de votre instance)
     - Noter la valeur de `DNS IPv4 public`. Cet URL vous permettra d'accéder à l'API via votre navigateur
     - Vérifier que l'état est `En cours d'exécution`
-- Installation de l'application API Java
+- Installation de l'application du serveur web NGINX et de l'application React
     - Depuis la page de l'instance, cliquer sur `Se connecter`
     - Sélectionner `EC2 Instance Connecter` puis cliquer sur `Se connecter`. Un terminal s'ouvre dans un nouvel onglet
     - Exécuter le script d'installation : `curl https://gitlab.com/ecam/lab/-/raw/main/lab/web/init-vm-web.sh | bash`
     - Le script se termine avec `Web app started`
-- Vérifier son fonctionnement en accédant via un navigateur à `http://${DNS_IPV4_PUBLIC}`. Une application doit apparaitre avec un gros carré noir au milieu. Ce carré noir implique que l'application Angular fonctionne mais qu'il n'y a pas d'API.
+- Vérifier son fonctionnement en accédant via un navigateur à `http://${DNS_IPV4_PUBLIC}`. Une application web de création de notes doit apparaitre. En haut, le schéma de l'architecture est présent : les blocs API et base de données sont en rouge.
 
 
 
@@ -150,7 +150,7 @@ Les deux instances EC2 et la base de données ont été créées mais elles ne c
     - Vérifier son fonctionnement en accédant via un navigateur à `http://${DNS_IPV4_PUBLIC_API}:8080/api/place/1`
     - Un JSON doit apparaître.
 
-### Connexion entre l'application Angular et l'API
+### Connexion entre l'application React et l'API
 - Via `EC2 Instance Connector`, se connecter au terminal de l'instance EC2 **Web**
     - Accéder aux logs de l'application avec la commande `tail -100 /var/log/nginx/nginx_error.log`.
     - Identifier le problème et corriger le fichier de configuration de l'application `/etc/nginx/sites-available/default`.
@@ -163,7 +163,7 @@ Les deux instances EC2 et la base de données ont été créées mais elles ne c
 
         </details>
     - Après correction, redémarrer le serveur Nginx : `sudo systemctl restart nginx.service`.
-- Après quelques instants, l'application Angular doit être fonctionnelle.
+- Après quelques instants, l'application React doit être fonctionnelle.
     - Vérifier son fonctionnement en accédant via un navigateur à `http://${DNS_IPV4_PUBLIC_WEB}`
 
 ## Nettoyage
@@ -212,12 +212,12 @@ Supprimer les ressources créées :
 
 
 USER(user) 
-CLIENT(browser, "Angular")
+CLIENT(browser, "React")
 
 AWSCLOUD(aws) {
 
     AMAZONS3(s3) {
-        BUCKET(site,"fichier Angular")
+        BUCKET(site,"fichier React")
     }
 
     AWSLAMBDA(lambda) {
