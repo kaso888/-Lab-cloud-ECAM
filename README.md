@@ -162,7 +162,7 @@ Les deux instances EC2 et la base de données ont été créées mais elles ne c
 
         </details>
 
-- Après quelques minutes, l'application devrait être disponible
+- Après quelques instants, l'application devrait être disponible
     - Vérifier son fonctionnement en accédant via un navigateur à `http://${DNS_IPV4_PUBLIC_API}:8080/api/place/1`
     - Un JSON doit apparaître.
 
