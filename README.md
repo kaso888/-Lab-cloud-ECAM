@@ -79,9 +79,10 @@ Le service permet d'utiliser sept moteurs : Amazon Aurora compatible avec MySQL,
         - Moteur : dernière version de MariaDB 
         - Modèle : **Offre gratuite** - db.t3.micro
         - Identifiant principal : `admin`
-        - Mot de passe : `admin123!`
+        - Mot de passe : `Ecam123!`
         - Stockage alloué : 20Go
-        - Groupes de sécurité VPC existants : sélectionner `db-sg`
+        - Dans *Connectivité*, Groupes de sécurité VPC existants : sélectionner `db-sg`
+        - Dans `Configuration supplémentaire`, Nom de la base de données initiale : `lab`
 - La création de l'instance va prendre 5/10 minutes. Passer à la suite.
 
 ## Création d'une VM pour l'application React via AWS EC2
@@ -106,7 +107,7 @@ Le service permet d'utiliser sept moteurs : Amazon Aurora compatible avec MySQL,
     - Sélectionner `EC2 Instance Connecter` puis cliquer sur `Se connecter`. Un terminal s'ouvre dans un nouvel onglet
     - Exécuter le script d'installation : `curl https://gitlab.com/ecam-ssg/lab/-/raw/main/lab/web/init-vm-web.sh | bash`
     - Le script se termine avec `Web app started`
-- Vérifier son fonctionnement en accédant via un navigateur à `http://${DNS_IPV4_PUBLIC}`. Une application web de création de notes doit apparaitre. En haut, le schéma de l'architecture est présent : les blocs API et base de données sont en rouge.
+- Vérifier son fonctionnement en accédant via un navigateur à `http://${DNS_IPV4_PUBLIC}` (attention : il faut enlever le `s` de `https`). Une application web de création de notes doit apparaitre. En haut, le schéma de l'architecture est présent : les blocs API et base de données sont en rouge.
 
 
 
@@ -133,6 +134,21 @@ Le service permet d'utiliser sept moteurs : Amazon Aurora compatible avec MySQL,
 ## Connexion des instances entre elles
 Les deux instances EC2 et la base de données ont été créées mais elles ne communiquent pas entre elles.
 
+### Connexion entre l'application React et l'API
+- Via `EC2 Instance Connector`, se connecter au terminal de l'instance EC2 **Web**
+    - Accéder aux logs de l'application avec la commande `tail -100 /var/log/nginx/nginx_error.log`.
+    - Identifier le problème et corriger le fichier de configuration de l'application `/etc/nginx/sites-available/default`.
+        <details>
+        <summary>Solution</summary>
+        
+        L'URL de l'API est incorrecte (`localhost`). Il faut la remplacer avec le `DNS IPv4 public` de l'instance API.
+        Il faut utiliser un éditeur (`sudo vim /etc/nginx/sites-available/default` ou `sudo nano /etc/nginx/sites-available/default`) pour éditer le fichier ou exécuter la commande `sudo sed -i "s/localhost/${DNS_IPV4_PUBLIC_API}/" /etc/nginx/sites-available/default`.
+
+        </details>
+    - Après correction, redémarrer le serveur Nginx : `sudo systemctl restart nginx.service`.
+- Après quelques instants, le lien entre l'application React et l'API doit être fonctionnelle.
+    - Retourner sur l'URL de l'application React et constater que le bloc API est vert
+
 ### Connexion entre l'API et la base de données
 - Via la console RDS, noter la valeur du `Point de terminaison` (i.e. l'url d'accès à la base de données)
 - Via `EC2 Instance Connector`, se connecter au terminal de l'instance EC2 API
@@ -150,21 +166,7 @@ Les deux instances EC2 et la base de données ont été créées mais elles ne c
     - Vérifier son fonctionnement en accédant via un navigateur à `http://${DNS_IPV4_PUBLIC_API}:8080/api/place/1`
     - Un JSON doit apparaître.
 
-### Connexion entre l'application React et l'API
-- Via `EC2 Instance Connector`, se connecter au terminal de l'instance EC2 **Web**
-    - Accéder aux logs de l'application avec la commande `tail -100 /var/log/nginx/nginx_error.log`.
-    - Identifier le problème et corriger le fichier de configuration de l'application `/etc/nginx/sites-available/default`.
-        <details>
-        <summary>Solution</summary>
-        
-        L'URL de l'API est incorrecte (`localhost`). Il faut la remplacer avec le `DNS IPv4 public` de l'instance API.
-        Il faut utiliser un éditeur (`vim` ou `nano`) pour éditer le fichier ou exécuter la commande `sudo sed -i "s/localhost/${DNS_IPV4_PUBLIC_API}/" /etc/nginx/sites-available/default`.
 
-
-        </details>
-    - Après correction, redémarrer le serveur Nginx : `sudo systemctl restart nginx.service`.
-- Après quelques instants, l'application React doit être fonctionnelle.
-    - Vérifier son fonctionnement en accédant via un navigateur à `http://${DNS_IPV4_PUBLIC_WEB}`
 
 ## Nettoyage
 Supprimer les ressources créées :
