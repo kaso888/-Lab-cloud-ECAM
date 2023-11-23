@@ -110,7 +110,7 @@ Le service permet d'utiliser sept moteurs : Amazon Aurora compatible avec MySQL,
 
 
 
-## Création d'une VM pour l'application API Java via AWS EC2
+## Création d'une VM pour l'application API via AWS EC2
 
 ### Tâches
 - Accéder au [service EC2](https://eu-west-3.console.aws.amazon.com/ec2/home?region=eu-west-3#Home:) via la console 
