@@ -8,9 +8,9 @@ cd /usr/local/applications
 
 
 echo "Downloding API app"
-curl https://gitlab.com/ecam/lab/-/raw/main/lab/api/bplace.jar?inline=false --output bplace.jar
-curl https://gitlab.com/ecam/lab/-/raw/main/lab/api/launch.sh?inline=false --output launch.sh
-curl https://gitlab.com/ecam/lab/-/raw/main/lab/api/launch.env?inline=false --output launch.env
+curl https://gitlab.com/ecam-ssg/lab/-/raw/main/lab/api/bplace.jar?inline=false --output bplace.jar
+curl https://gitlab.com/ecam-ssg/lab/-/raw/main/lab/api/launch.sh?inline=false --output launch.sh
+curl https://gitlab.com/ecam-ssg/lab/-/raw/main/lab/api/launch.env?inline=false --output launch.env
 
 chmod +x launch.sh
 nohup ./launch.sh &

@@ -8,7 +8,7 @@ cd /usr/local/applications
 
 
 echo "Downloding API app"
-curl https://gitlab.com/ecam/lab/-/raw/main/lab/api/bplace-h2.jar?inline=false --output bplace.jar
+curl https://gitlab.com/ecam-ssg/lab/-/raw/main/lab/api/bplace-h2.jar?inline=false --output bplace.jar
 
 nohup java -jar bplace.jar &
 echo "API app started"

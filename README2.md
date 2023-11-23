@@ -79,7 +79,7 @@ Terraform has been successfully initialized!
 - Pour personnaliser l'installation de l'instance ec2, créer un script user-data-api.sh et ajouter les lignes suivantes :
 ```
 #!/bin/bash
-curl https://gitlab.com/ecam/lab/-/raw/main/lab/api/init-vm-api-h2.sh | bash
+curl https://gitlab.com/ecam-ssg/lab/-/raw/main/lab/api/init-vm-api-h2.sh | bash
 ```
 
 - Créer un nouveau fichier terraform et déclarer la ressource ec2 api server avec les caractéristiques suivantes :
@@ -116,7 +116,7 @@ instance_api_server_public_ip = "13.37.240.116"
  ${DNS_IPV4_PUBLIC_API} par l'adresse ip obtenue à l'étape précédente
 ```
 #!/bin/bash
-curl https://gitlab.com/ecam/lab/-/raw/main/lab/web/init-vm-web.sh | bash
+curl https://gitlab.com/ecam-ssg/lab/-/raw/main/lab/web/init-vm-web.sh | bash
 sudo sed -i "s/localhost/${DNS_IPV4_PUBLIC_API}/" /etc/nginx/sites-available/default
 sudo systemctl restart nginx.service
 ```
