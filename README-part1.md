@@ -77,7 +77,7 @@ Le service permet d'utiliser sept moteurs : Amazon Aurora compatible avec MySQL,
         - Identifiant d'instance de base de données : `${PRENOM}-db`
         - Mode : création standard
         - Moteur : dernière version de MariaDB 
-        - Modèle : **Offre gratuite** - db.t3.micro
+        - Modèle : **Offre gratuite** - db.t2.micro
         - Identifiant principal : `admin`
         - Mot de passe : `Ecam123!`
         - Stockage alloué : 20Go
@@ -118,7 +118,7 @@ Le service permet d'utiliser sept moteurs : Amazon Aurora compatible avec MySQL,
 - Créer une instance EC2
 	- Nom : `${PRENOM}-api-ec2`
     - Image OS : `Ubuntu 22.04 LTS`
-	- Type d'instance : `t2.micro`
+	- Type d'instance : `t3.micro`
 	- Paire de clé : `admin-key`
 	- Groupe de sécurité (Pare-feu) : `api-sg`
 - Après quelques minutes : l'instance est disponible
@@ -153,12 +153,12 @@ Les deux instances EC2 et la base de données ont été créées mais elles ne c
 - Via la console RDS, noter la valeur du `Point de terminaison` (i.e. l'url d'accès à la base de données)
 - Via `EC2 Instance Connector`, se connecter au terminal de l'instance EC2 API
     - Accéder aux logs de l'application avec la commande `tail -100 /usr/local/applications/nohup.out`.
-    - Identifier le problème et corriger le fichier de configuration de l'application `/usr/local/applications/launch.env`.
+    - Identifier le problème et corriger le fichier de configuration de l'application `/usr/local/applications/properties.ini`.
         <details>
         <summary>Solution</summary>
         
         L'URL de la base de données est incorrecte (`FIXME`). Il faut la remplacer avec le `Point de terminaison`.
-        Il faut utiliser un éditeur (`vim` ou `nano`) pour éditer le fichier ou exécuter la commande `sed -i "s/FIXME/${POINT_DE_TERMINAISON}/" /usr/local/applications/launch.env`
+        Il faut utiliser un éditeur (`vim` ou `nano`) pour éditer le fichier ou exécuter la commande `sed -i "s/FIXME/${POINT_DE_TERMINAISON}/" /usr/local/applications/properties.ini`
 
         </details>
 

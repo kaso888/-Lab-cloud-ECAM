@@ -67,9 +67,9 @@ L'application à déployer est un multiplicateur :
 - Accéder au [service Lambda](https://eu-west-3.console.aws.amazon.com/lambda/home?region=eu-west-3#/functions) via la console AWS
 - Créer une première fonction
     - nom : `${PRENOM}-add-lambda`
-    - Techno : `Node.js 18.x`
-    - Role : utiliser un role existant : `xavier-add-lambda-role-5wn8pt93`
-    - Activer `Activer l'URL de fonction` avec l'authentification `NONE` afin d'avoir accès à la fonction depuis un navigateur
+    - Techno : `Node.js 20.x`
+    - Role : utiliser un role existant : `add-lambda-role-5wn8pt93`
+    - Dans paramètres avancés, activer `Activer l'URL de fonction` avec l'authentification `NONE` afin d'avoir accès à la fonction depuis un navigateur
     - Code source :
 ```javascript 
 export const handler = async(event) => {
@@ -102,7 +102,7 @@ Il peut être utilisé pour exposer des [sites web static](https://docs.aws.amaz
 - Créer un bucket/compatiment (espace de stockage)
     - nom : `${PRENOM}-ecam-lab-s3`
     - Region `eu-west-3`
-    - Décocher `Bloquer tous les accès publics`
+    - Décocher `Bloquer tous les accès publics` et cocher la case  `Je suis conscient, qu'avec les paramètres actuels, ce compartiment et les objets qu'il contient peuvent devenir publics.`
 - Accéder au compartiment et modifier la `Stratégie de compartiment` dans l'onglet `Autorisations`
     - Politique de sécurité
 ```json
@@ -124,7 +124,7 @@ Il peut être utilisé pour exposer des [sites web static](https://docs.aws.amaz
     ]
 }
 ```
-- Charger dans le bucket le fichier `s3/index.html` (présent dans ce repo)
+- Charger dans le bucket le fichier [index.html](https://gitlab.com/ecam-ssg/lab/-/raw/main/lab/s3/index.html?ref_type=heads) (présent dans ce repo)
 - Accéder au fichier chargé sur S3 et cliquer sur l'`URL de l'objet`. Un onglet s'ouvre avec un formulaire contenant `Valeur 1` et `Valeur 2`.
 - Tester puis corriger le fichier `index.html`
 
