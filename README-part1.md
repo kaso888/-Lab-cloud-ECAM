@@ -128,7 +128,7 @@ Le service permet d'utiliser sept moteurs : Amazon Aurora compatible avec MySQL,
 - Installation de l'application API Java
     - Depuis la page de l'instance, cliquer sur `Se connecter`
     - Sélectionner `EC2 Instance Connector` puis cliquer sur `Se connecter`. Un terminal s'ouvre dans un nouvel onglet
-    - Exécuter le script d'installation : `curl https://gitlab.com/ecam-ssg/lab/-/raw/main/lab/api/init-vm-api.sh | bash`
+    - Exécuter le script d'installation : `curl https://gitlab.com/ecam-ssg/lab/-/raw/main/lab/api/init-vm-api-maria.sh | bash`
     - Le script se termine avec `API app created`
 
 ## Connexion des instances entre elles
