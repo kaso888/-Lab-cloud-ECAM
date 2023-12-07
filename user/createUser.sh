@@ -2,6 +2,7 @@
 
 user_name=$1
 group=EcamUser
+AWS_GLOBAL_ACCOUNT=040111175067
 
 
 password="$(date +%s | sha256sum | base64 | head -c 32 ; echo)0"
@@ -47,7 +48,7 @@ aws_console_url="https://${AWS_GLOBAL_ACCOUNT}.signin.aws.amazon.com/console"
 echo "" >> public/${user_name}.env
 
 echo "Console AWS : " >> public/${user_name}.env
-echo "Url : <a href="${aws_console_url}" >${aws_console_url}</a>" >> public/${user_name}.env
+echo "Url de connexion : ${aws_console_url}" >> public/${user_name}.env
 echo "Nom d'utilisateur : ${user_name}" >> public/${user_name}.env
 echo "Mot de passe : ${password}" >> public/${user_name}.env
 echo "" >> public/${user_name}.env
@@ -55,3 +56,5 @@ echo "" >> public/${user_name}.env
 echo "Clé d'accès via API : " >> public/${user_name}.env
 echo "Access key : ${access_key_id}" >> public/${user_name}.env
 echo "Secret key : ${secret_key}" >> public/${user_name}.env
+
+cat public/${user_name}.env
