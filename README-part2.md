@@ -1,133 +1,186 @@
-# Lab - Partie 2 - FaaS sur AWS 
+# Lab - Partie 2 - IaC sur AWS
 
-## Architecture
+## Prérequis du LAB
+- Connaitre les commandes de base en shell : export, cd, mkdir, vi
+- Connaitre les bases en réseau :
+	- Adresse ip
+	- Protocole
+	- Port
+	- Réseau ou host Source / destination
+- Connaitre les commandes de base Terraform (cf cours précédent)
+- Connaitre la déclaration des ressources principales en Terraform (cf cours précédent)
 
-```plantuml
-@startuml component
-!include <aws/common>
-!include <aws/Storage/AmazonS3/AmazonS3>
-!include <aws/Compute/AWSLambda/AWSLambda>
-!include <aws/Compute/AWSLambda/LambdaFunction/LambdaFunction>
-!include <aws/Database/AmazonDynamoDB/AmazonDynamoDB>
-!include <aws/Database/AmazonDynamoDB/table/table>
+## Objectifs du LAB
+- Déployer la même infrastructure du lab n°1 mais uniquement avec un outil de IaC (Terraform)
+- Déployer les groupes de sécurité
+- Déployer les instances EC2
+- Personnaliser les instances lors du primo déploiement (cloud init)
 
+## Initialisation de l'environnement
+### Mise en place de l'environnement Terraform
+- Dans le repository Gitlab, lancer l'outil gitpod
+- Accepter la connexion avec votre compte gitlab
+- Vous devriez basculer sur une url du type https://ecam-lab-r6h491jsld3.ws-eu77.gitpod.io/
 
-!include <aws/common>
-!include <aws/ApplicationServices/AmazonAPIGateway/AmazonAPIGateway>
-!include <aws/Compute/AWSLambda/AWSLambda>
-!include <aws/Compute/AWSLambda/LambdaFunction/LambdaFunction>
-!include <aws/Database/AmazonDynamoDB/AmazonDynamoDB>
-!include <aws/Database/AmazonDynamoDB/table/table>
-!include <aws/General/AWScloud/AWScloud>
-!include <aws/General/client/client>
-!include <aws/General/user/user>
-!include <aws/SDKs/JavaScript/JavaScript>
-!include <aws/Storage/AmazonS3/AmazonS3>
-!include <aws/Storage/AmazonS3/bucket/bucket>
-!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v11.1/dist
-
-!includeurl AWSPuml/AWSCommon.puml
-
-!includeurl AWSPuml/SecurityIdentityCompliance/Cognito.puml
-
-
-
-USER(user) 
-CLIENT(browser, "React")
-
-AWSCLOUD(aws) {
-
-    AMAZONS3(s3) {
-        BUCKET(site,"fichier React")
-    }
-
-    AWSLAMBDA(lambda) {
-        LAMBDAFUNCTION(lambda_add,todos)
-    }
-}
-
-user - browser
-
-browser -> site
-
-browser -> lambda_add
-
-@enduml
+### Test installation Terraform
+- Pour gagner du temps dans l'exécution du lab, nous avons préinstaller dans un docker file la version du client Terraform
+- Ouvrir un invite de commande puis lancer la commande permettant d'obtenir la version de Terraform. Vous devriez obtenir :
+```
+Terraform v1.3.6
+on linux_amd64
 ```
 
-L'application à déployer est un multiplicateur :
-- Le site web static est exposé dans un bucket S3 public
-- La fonction de multiplication est déployée via Lambda
+### Initialisation du workspace
+- Dans le terminal de la session Gitpod, créer un répertoire de travail, nommé par exempleworkspace_aws, puis se placer dans ce répertoire
+- Exporter les variables d'environnement suivantes avec les contenus communiqués au démarrage du LAB :
+	- AWS_ACCESS_KEY_ID : l'id de la clé d'accès
+	- AWS_SECRET_ACCESS_KEY : le secret de la clé
+- Ces variables constituent les crendentials pour joindre l'api AWS depuis Terraform
 
-## Utilisation de AWS Lambda
-### Description de AWS Lambda
-[AWS Lambda](https://aws.amazon.com/fr/lambda/) est un FaaS. C'est-à-dire, un service qui permet d'exécuter du code pour presque tout type d'application ou de service de backend, sans vous soucier de l'allocation ou de la gestion des serveurs.  
-
-### Tâches
-- Accéder au [service Lambda](https://eu-west-3.console.aws.amazon.com/lambda/home?region=eu-west-3#/functions) via la console AWS
-- Créer une première fonction
-    - nom : `${PRENOM}-add-lambda`
-    - Techno : `Node.js 20.x`
-    - Role : utiliser un role existant : `add-lambda-role-5wn8pt93`
-    - Dans paramètres avancés, activer `Activer l'URL de fonction` avec l'authentification `NONE` afin d'avoir accès à la fonction depuis un navigateur
-    - Code source :
-```javascript 
-export const handler = async(event) => {
-    console.log("Received event: ", event);
-    const response = {
-        statusCode: 200,
-        headers: {
-            "Access-Control-Allow-Headers" : "Content-Type",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "OPTIONS,GET"
-        },
-        body: '{"result":"' + (Number(event["queryStringParameters"]['val1']) + Number(event["queryStringParameters"]['val2'])) +'"}',
-    };
-    return response;
-};
+## Provisioning des ressources via Terraform
+### Création du provider AWS
+- Dans le répertoire workspace, créer un fichier provider.tf avec les déclarations suivantes :
+	- la version minimum de Terraform : 1.2.0
+	- la version minimum du provider AWS : 4.16
+	- provider AWS
+	- la région "eu-west-3"
+- Dans l'invite de commande de gitpod, lancer la commande d'initialisation de l'environnement terraform
+	- Vous devriez obtenir l'output suivant :
+	
 ```
-- Depuis la page de la fonction, récupérer l'`URL de fonction`
-- Via un navigateur, accéder à l'url `https://${URL_FONCTION}?val1=1&val2=14`
-- Modifier la fonction pour réaliser une multiplication au lieu d'une addition
+Initializing the backend...
 
-## Déploiemet d'un site web static via AWS S3
-### Description de AWS S3
-Amazon Simple Storage Service ([Amazon S3](https://aws.amazon.com/fr/s3/)) est un service de stockage d'objets qui offre une capacité de mise à l'échelle, une disponibilité des données, une sécurité et des performances de pointe. 
+Initializing provider plugins...
+- Finding hashicorp/aws versions matching "~> 4.16"...
+- Installing hashicorp/aws v4.45.0...
+- Installed hashicorp/aws v4.45.0 (signed by HashiCorp)
 
-Il peut être utilisé pour exposer des [sites web static](https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteHosting.html).
+Terraform has created a lock file .terraform.lock.hcl to record the provider
+selections it made above. Include this file in your version control repository
+so that Terraform can guarantee to make the same selections by default when
+you run "terraform init" in the future.
 
-
-### Tâches
-- Accéder au [service S3](https://s3.console.aws.amazon.com/s3/buckets?region=eu-west-3) via la console AWS
-- Créer un bucket/compatiment (espace de stockage)
-    - nom : `${PRENOM}-ecam-lab-s3`
-    - Region `eu-west-3`
-    - Décocher `Bloquer tous les accès publics` et cocher la case  `Je suis conscient, qu'avec les paramètres actuels, ce compartiment et les objets qu'il contient peuvent devenir publics.`
-- Accéder au compartiment et modifier la `Stratégie de compartiment` dans l'onglet `Autorisations`
-    - Politique de sécurité
-```json
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "PublicRead",
-            "Effect": "Allow",
-            "Principal": "*",
-            "Action": [
-                "s3:GetObject",
-                "s3:GetObjectVersion"
-            ],
-            "Resource": [
-                "arn:aws:s3:::${PRENOM}-ecam-lab-s3/*"
-            ]
-        }
-    ]
-}
+Terraform has been successfully initialized!
 ```
-- Charger dans le bucket le fichier [index.html](https://gitlab.com/ecam-ssg/lab/-/raw/main/lab/s3/index.html?ref_type=heads) (présent dans ce repo)
-- Accéder au fichier chargé sur S3 et cliquer sur l'`URL de l'objet`. Un onglet s'ouvre avec un formulaire contenant `Valeur 1` et `Valeur 2`.
-- Tester puis corriger le fichier `index.html`
 
-### Nettoyage
-- Supprimer le fichier présent dans le compatiment S3 puis supprimer le compartiment
-- Supprimer la fonction Lambda
+### Création des groupes de sécurité pour les instances ec2 à déployer
+- Créer un nouveau fichier terraform pour déclarer 4 groupes de sécurité :
+	- 1 groupe de sécurité autorisant le protocole TCP, ports 443, 80 et 22 de l'instance web
+	- 1 groupe de sécurité autorisant le protocole TCP pour les ports 8080 et 22 de l'instance api
+	- 1 groupe de sécurité autorisant le protocole TCP pour le port 3306 de l'instance db
+	- 1 groupe de sécurité autorisant tout le traffic sortant pour tous les protocoles et ports pour toutes les 3 instances EC2
+- Utiliser l'id de vpc suivant : vpc-0777f2a2c8769e96d
+- Lancer la commande terraform pour valider la configuration
+	- vous devriez avoir 4 ressources à créer
+- Une fois la validation effectuée, lancer la commande d'application de la configuration en confirmant l'action lorsque demandé
+- Se rendre sur la console AWS et constater l'apparition des nouvelles ressources
+
+### Création de l'instance EC2 API server
+- Pour personnaliser l'installation de l'instance ec2, créer un script user-data-api.sh et ajouter les lignes suivantes :
+```
+#!/bin/bash
+curl https://gitlab.com/ecam-ssg/lab/-/raw/main/lab/api/init-vm-api-local.sh | bash
+```
+
+- Créer un nouveau fichier terraform et déclarer la ressource ec2 api server avec les caractéristiques suivantes :
+	- type de la ressource : aws_instance
+	- nom de la ressource : api_server (par exemple, doit être un nom unique dans le même workspace terraform)
+	- identifiant de l'image : ami-0493936afbe820b28 (correspondant à une image ubuntu)
+	- gabarit de l'instance : t2.micro
+	- groupes de sécurité créé précédemment (inbound and outbound)
+	- nom de l'instance dans l'ihm aws : API_Server_TRIGRAMME (TRIGRAMME : 1iere lettre prenom + 2 1iere lettre nom)
+	- déclarer le script user-data-api.sh dans la configuration de l'instance
+- Lancer la commande terraform pour valider la configuration
+	- vous devriez avoir 1 ressource à créer
+- Une fois la validation effectuée, lancer la commande d'application de la configuration en confirmant l'action lorsque demandé
+- Se rendre sur la console AWS et constater l'apparition de la nouvelle ressource
+
+### Récupération d'output pour l'instance EC2 API Server
+Pour pouvoir configurer le lien entre l'instance Web et l'instance API, il faut que vous récupériez avec Terraform l'adresse ip publique en IPV4 de l'instance
+API précédemment créée. Pour cela :
+- Créer un nouveau fichier terraform et déclarer la sortie suivante de l'instance API Server :
+	- id
+	- public_ip
+- Lancer la commande terraform pour valider la configuration
+- Une fois la validation effectuée, lancer la commande d'application de la configuration en confirmant l'action lorsque demandé
+- Vous devriez obtenir l'output suivant
+```
+Outputs:
+
+instance_api_server_id = "i-04e47f567f694e901"
+instance_api_server_public_ip = "13.37.240.116"
+```
+
+### Création de l'instance EC2 Web server
+- Pour personnaliser l'installation de l'instance ec2, créer un script user-data-web.sh et ajoute les commandes suivantes en remplaçant 
+ ${DNS_IPV4_PUBLIC_API} par l'adresse ip obtenue à l'étape précédente
+```
+#!/bin/bash
+curl https://gitlab.com/ecam-ssg/lab/-/raw/main/lab/web/init-vm-web.sh | bash
+sudo sed -i "s/localhost/${DNS_IPV4_PUBLIC_API}/" /etc/nginx/sites-available/default
+sudo systemctl restart nginx.service
+```
+
+- Créer un nouveau fichier terraform et déclarer la ressource ec2 web server avec les caractéristiques suivantes :
+	- type de la ressource : aws_instance
+	- nom de la ressource : web_server (par exemple, doit être un nom unique dans le même workspace terraform)
+	- identifiant de l'image : ami-0493936afbe820b28 (correspondant à une image ubuntu)
+	- gabarit de l'instance : t2.micro
+	- groupes de sécurité créés précédemment (inbound and outbound)
+	- nom de l'instance dans l'ihm aws : Web_Server_TRIGRAMME (TRIGRAMME : 1iere lettre prenom + 2 1iere lettre nom)
+	- déclarer le script user-data-web.sh dans la configuration de l'instance
+- Lancer la commande terraform pour valider la configuration
+	- vous devriez avoir 1 ressource à créer
+- Une fois la validation effectuée, lancer la commande d'application de la configuration en confirmant l'action lorsque demandé
+- Se rendre sur la console AWS et constater l'apparition de la nouvelle ressource
+
+### Création de l'instance EC2 Data server
+- Créer un nouveau fichier terraform et déclarer la ressource ec2 data server avec les caractéristiques suivantes :
+	- type de la ressource : aws_instance
+	- nom de la ressource : data_server (par exemple, doit être un nom unique dans le même workspace terraform)
+	- identifiant de l'image : ami-0493936afbe820b28 (correspondant à une image ubuntu)
+	- gabarit de l'instance : t2.micro
+	- groupes de sécurité créé précédemment (inbound and outbound)
+	- nom de l'instance dans l'ihm aws : Data_Server_TRIGRAMME (TRIGRAMME : 1iere lettre prenom + 2 1iere lettre nom)
+- Lancer la commande terraform pour valider la configuration
+	- vous devriez avoir une ressource à créer
+- Une fois la validation effectuée, lancer la commande d'application de la configuration en confirmant l'action lorsque demandé
+- Se rendre sur la console AWS et constater l'apparition de la nouvelle ressource
+
+### Tests de l'application
+- Vous pouvez dérouler les mêmes tests de l'application réalisés pour le lab n°1
+
+## Destruction des ressources via Terraform
+### Libération des ressources
+- Lancer la commande de destruction de toutes les ressources terraform
+	- vous devriez avoir 7 ressources à Supprimer
+- Confirmer la commande en entrant yes
+- Vous devriez obtenir la sortie suivante :
+	```
+	aws_instance.web_server: Destroying... [id=i-08b759cc1ffca6d0f]
+	aws_instance.db_server: Destroying... [id=i-0944d265e59d2ed85]
+	aws_instance.api_server: Destroying... [id=i-04e47f567f694e901]
+	aws_instance.web_server: Still destroying... [id=i-08b759cc1ffca6d0f, 10s elapsed]
+	aws_instance.db_server: Still destroying... [id=i-0944d265e59d2ed85, 10s elapsed]
+	aws_instance.api_server: Still destroying... [id=i-04e47f567f694e901, 10s elapsed]
+	aws_instance.web_server: Still destroying... [id=i-08b759cc1ffca6d0f, 20s elapsed]
+	aws_instance.api_server: Still destroying... [id=i-04e47f567f694e901, 20s elapsed]
+	aws_instance.db_server: Still destroying... [id=i-0944d265e59d2ed85, 20s elapsed]
+	aws_instance.web_server: Destruction complete after 30s
+	aws_security_group.web-sg: Destroying... [id=sg-052a0569b975be8de]
+	aws_instance.api_server: Still destroying... [id=i-04e47f567f694e901, 30s elapsed]
+	aws_instance.db_server: Still destroying... [id=i-0944d265e59d2ed85, 30s elapsed]
+	aws_security_group.web-sg: Destruction complete after 1s
+	aws_instance.api_server: Destruction complete after 40s
+	aws_instance.db_server: Destruction complete after 40s
+	aws_security_group.api-sg: Destroying... [id=sg-0ef4eb6af1c931c0c]
+	aws_security_group.all-sg: Destroying... [id=sg-04a5db48a035d8dd9]
+	aws_security_group.db-sg: Destroying... [id=sg-0d467f870b1583ddc]
+	aws_security_group.api-sg: Destruction complete after 1s
+	aws_security_group.all-sg: Destruction complete after 1s
+	aws_security_group.db-sg: Destruction complete after 1s
+
+	Destroy complete! Resources: 7 destroyed.
+	```
+### Consultation de la console AWS
+- Se rendre sur la console AWS et vérifier que vos ressources ont bien été supprimées : à l'état résilié
