@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "/static/css/main.2993b914.css",
+    "main.js": "/static/js/main.f0c9fc94.js",
+    "static/js/787.c710a0e0.chunk.js": "/static/js/787.c710a0e0.chunk.js",
+    "static/media/maria-api-ko.png": "/static/media/maria-api-ko.e7b1a8d182693fd98970.png",
+    "static/media/maria-db-ko.png": "/static/media/maria-db-ko.9a014fc5a647066c4f23.png",
+    "static/media/maria-ok.png": "/static/media/maria-ok.c858a58408b35c31588e.png",
+    "static/media/local-ok.png": "/static/media/local-ok.75897e5cc1c28e70e28e.png",
+    "index.html": "/index.html",
+    "main.2993b914.css.map": "/static/css/main.2993b914.css.map",
+    "main.f0c9fc94.js.map": "/static/js/main.f0c9fc94.js.map",
+    "787.c710a0e0.chunk.js.map": "/static/js/787.c710a0e0.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.2993b914.css",
+    "static/js/main.f0c9fc94.js"
+  ]
+}
