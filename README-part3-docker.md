@@ -5,14 +5,22 @@ docker run -e MYSQL_ROOT_PASSWORD=mypass -e MYSQL_USER=admin -e MYSQL_PASSWORD=E
 ## Build de l'image Docker pour la partie API
 - Dans le dossier `lab/docker/api`, un `Dockerfile` est présent pour pouvoir builder l'image
     - Le mot-clé `FROM` permet d'indiquer l'image de base (ici Ubuntu)
-    - `COPY` permet de copier les ressources de l'application (ici le binaire `lab-back` et le fichier de configuration)
+    - `COPY` permet de copier les ressources de l'application (ici le binaire `lab-api` et le fichier de configuration)
     - `EXPOSE` permet d'indiquer sur quel port écoute l'application (ici 8080)
     - `CMD` permet d'indiquer la commande à lancer quand le conteneur démarre
 - Builder l'image
-    - Via le terminal, aller dans le dossier contenant le `Dockerfile`
+    - Via le terminal, aller dans le dossier contenant le `Dockerfile` : `cd lab/docker/api`
+    - Lancer la commande de build de l'image : `docker build . -t lab-api`
+        - l'option `-t` permet d'indique le nom de l'image
+- Lancer le conteneur avec :
+    - Mapping de port `80` -> `80`
+    - `network` : `host`
 
-docker build . -t lab-back
-docker run -p 8080:8080 --network host lab-back
+<details>
+        <summary>Solution</summary>
+        docker run -p 8080:8080 --network host lab-api
+</details>
+
 
 ## Création d'une image Docker pour le composant web
 - Dans le dossier `lab/docker/web`, créer un `Dockerfile` avec les éléments suivants :
