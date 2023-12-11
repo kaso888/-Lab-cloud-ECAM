@@ -1,12 +1,52 @@
+# Lab - Partie 3 - Découverte de Docker
+
+## Découverte de Docker
+
+- Lancer un premier conteneur : `docker run -d -p 80:80 marcincuber/2048-game:latest`
+- Accéder à la webapp (dans Gitpod > onglet *Ports* > Port *80*)
+- Utiliser `docker ps` pour lister les conteneurs présents et récupérer l'id des conteneurs
+- Utiliser `docker logs <containerId>` pour récupérer les logs de conteneur
+- Arrêter le conteneur avec `docker stop <containerId>` et vérifier que l'application ne fonctionne plus
+- Arrêter le conteneur avec `docker start <containerId>` et vérifier que l'application refonctionne
+- Arrêter le conteneur et supprimer le `docker rm <containerId>`
 
 
-docker run -e MYSQL_ROOT_PASSWORD=mypass -e MYSQL_USER=admin -e MYSQL_PASSWORD=Ecam123! -e MYSQL_DATABASE=lab -p 3306:3306 docker.io/library/mariadb:10.3
+## Lancement d'un conteneur MariaDB
+- Lancer un conteneur MariaDB avec la commande suivante :
+```sh
+docker run \
+    -e MYSQL_ROOT_PASSWORD=mypass \
+    -e MYSQL_USER=admin \
+    -e MYSQL_PASSWORD=Ecam123! \
+    -e MYSQL_DATABASE=lab \
+    -p 3306:3306 \
+    -d \
+    docker.io/library/mariadb:10.3
+```
+- Description de la commande `docker run`
+  - L'option `-e` permet de définir un paramètre pour le conteneur
+  - `-p` permet de faire du mapping de port (par défaut, les ports du conteneur ne sont pas accessibles)
+  - `-d` permet de lancer le conteneur en mode détaché (i.e. en tâche de fond)
+  - `docker.io/library/mariadb:10.3` indique le nom et la version de l'image à utiliser
+- Récupérer l'id du conteneur et accéder aux logs de celui-ci
+  - Quelles sont les dernières lignes de logs ?
+        <details>
+        <summary>Solution</summary>
+        ```
+        2023-12-11 17:13:12 0 [Note] Added new Master_info '' to hash table
+        2023-12-11 17:13:12 0 [Note] mysqld: ready for connections.
+        Version: '10.3.39-MariaDB-1:10.3.39+maria~ubu2004'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  mariadb.org binary distribution
+        ```
+        </details>
 
-## Build de l'image Docker pour la partie API
-- Dans le dossier `lab/docker/api`, un `Dockerfile` est présent pour pouvoir builder l'image
-    - Le mot-clé `FROM` permet d'indiquer l'image de base (ici Ubuntu)
-    - `COPY` permet de copier les ressources de l'application (ici le binaire `lab-api` et le fichier de configuration)
-    - `EXPOSE` permet d'indiquer sur quel port écoute l'application (ici 8080)
+
+
+
+## Build et lancement de l'image Docker pour le composant API
+- Dans le dossier `lab/docker/api`, un `Dockerfile` est présent pour pouvoir builder l'image. Consulter le contenu du fichier : 
+    - Le mot-clé `FROM` permet d'indiquer l'image de base 
+    - `COPY` permet de copier les ressources de l'application depuis le dossier local vers l'image (ici le binaire `lab-api` et le fichier de configuration)
+    - `EXPOSE` permet d'indiquer sur quel port écoute l'application 
     - `CMD` permet d'indiquer la commande à lancer quand le conteneur démarre
 - Builder l'image
     - Via le terminal, aller dans le dossier contenant le `Dockerfile` : `cd lab/docker/api`
@@ -15,11 +55,10 @@ docker run -e MYSQL_ROOT_PASSWORD=mypass -e MYSQL_USER=admin -e MYSQL_PASSWORD=E
 - Lancer le conteneur avec :
     - Mapping de port `80` -> `80`
     - `network` : `host`
-
-<details>
-        <summary>Solution</summary>
-        docker run -p 8080:8080 --network host lab-api
-</details>
+            <details>
+            <summary>Solution</summary>
+            `docker run -p 8080:8080 --network host lab-api`
+            </details>
 
 
 ## Création d'une image Docker pour le composant web
@@ -31,11 +70,9 @@ docker run -e MYSQL_ROOT_PASSWORD=mypass -e MYSQL_USER=admin -e MYSQL_PASSWORD=E
 - Lancer le conteneur avec :
     - Mapping de port `80` -> `80`
     - `network` : `host`
-- Accéder à l'URL de l'application créée (Dans Gitpod > onglet *Ports* > Port *80*)
+- Accéder à l'URL de l'application créée (dans Gitpod > onglet *Ports* > Port *80*)
     - L'application doit fonctionner complètement
-- 
-
-<details>
+        <details>
         <summary>Solution</summary>
         
         Contenu du `Dockerfile`
@@ -49,4 +86,4 @@ docker run -e MYSQL_ROOT_PASSWORD=mypass -e MYSQL_USER=admin -e MYSQL_PASSWORD=E
         Commande à lancer :
         - Pour builder l'image : `docker build . -t lab-web`
         - Pour lancer le conteneur : `docker run -p 80:80 --network host lab-web`
-</details>
+        </details>

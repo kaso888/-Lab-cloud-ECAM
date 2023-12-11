@@ -1,4 +1,4 @@
-# Lab - Partie 1 - IaaS sur AWS 
+# Lab - Partie 1.1 - IaaS sur AWS 
 
 ## Architecture
 
@@ -178,7 +178,13 @@ Supprimer les ressources créées :
     - Sur la page listant les instances EC2, sélectionner les instances `${PRENOM}-web-ec2` et `${PRENOM}-api-ec2`
     - Cliquer sur `Etat de l'instance` > `Résilier`
 
-# Lab - Partie 2 - FaaS sur AWS 
+
+
+---
+<br/><br/><br/><br/><br/>
+
+
+# Lab - Partie 1.2 - FaaS sur AWS 
 
 ## Architecture
 
