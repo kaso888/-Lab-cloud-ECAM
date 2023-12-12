@@ -59,7 +59,7 @@ docker run \
     - `network` : `host`
             <details>
             <summary>Solution</summary>
-            `docker run -p 8080:8080 --network host lab-api`
+            `docker run -p 8080:8080 -d --network host lab-api`
             </details>
 
 
