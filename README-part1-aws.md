@@ -95,7 +95,7 @@ Le service permet d'utiliser sept moteurs : Amazon Aurora compatible avec MySQL,
 - Créer une instance EC2
 	- Nom : `${PRENOM}-web-ec2`
     - Image OS : `Ubuntu 22.04 LTS`
-	- Type d'instance : `t3.micro`
+	- Type d'instance : `t2.micro`
 	- Paire de clé : `admin-key`
 	- Groupe de sécurité (Pare-feu) : `web-sg`
 - Après quelques minutes : l'instance est disponible
@@ -118,7 +118,7 @@ Le service permet d'utiliser sept moteurs : Amazon Aurora compatible avec MySQL,
 - Créer une instance EC2
 	- Nom : `${PRENOM}-api-ec2`
     - Image OS : `Ubuntu 22.04 LTS`
-	- Type d'instance : `t3.micro`
+	- Type d'instance : `t2.micro`
 	- Paire de clé : `admin-key`
 	- Groupe de sécurité (Pare-feu) : `api-sg`
 - Après quelques minutes : l'instance est disponible
@@ -256,7 +256,9 @@ L'application à déployer est un multiplicateur :
     - Techno : `Node.js 20.x`
     - Role : utiliser un role existant : `add-lambda-role-5wn8pt93`
     - Dans paramètres avancés, activer `Activer l'URL de fonction` avec l'authentification `NONE` afin d'avoir accès à la fonction depuis un navigateur
-    - Code source :
+- Depuis la page de la fonction, 
+    - Récupérer l'`URL de fonction`
+    - Modifier le code source :
 ```javascript 
 export const handler = async(event) => {
     console.log("Received event: ", event);
@@ -272,7 +274,6 @@ export const handler = async(event) => {
     return response;
 };
 ```
-- Depuis la page de la fonction, récupérer l'`URL de fonction`
 - Via un navigateur, accéder à l'url `https://${URL_FONCTION}?val1=1&val2=14`
 - Modifier la fonction pour réaliser une multiplication au lieu d'une addition
 
@@ -290,7 +291,7 @@ Il peut être utilisé pour exposer des [sites web static](https://docs.aws.amaz
     - Region `eu-west-3`
     - Décocher `Bloquer tous les accès publics` et cocher la case  `Je suis conscient, qu'avec les paramètres actuels, ce compartiment et les objets qu'il contient peuvent devenir publics.`
 - Accéder au compartiment et modifier la `Stratégie de compartiment` dans l'onglet `Autorisations`
-    - Politique de sécurité
+    - Politique de sécurité (attention à remplacer `${PRENOM}`)
 ```json
 {
     "Version": "2012-10-17",
@@ -312,8 +313,9 @@ Il peut être utilisé pour exposer des [sites web static](https://docs.aws.amaz
 ```
 - Charger dans le bucket le fichier [index.html](https://gitlab.com/ecam-ssg/lab/-/raw/main/lab/s3/index.html?ref_type=heads) (présent dans ce repo)
 - Accéder au fichier chargé sur S3 et cliquer sur l'`URL de l'objet`. Un onglet s'ouvre avec un formulaire contenant `Valeur 1` et `Valeur 2`.
-- Tester puis corriger le fichier `index.html`
+- Tester puis corriger le fichier `index.html` 
+    - Avant de réuploader le fichier, il faudra le supprimer sur S3
 
 ### Nettoyage
-- Supprimer le fichier présent dans le compatiment S3 puis supprimer le compartiment
+- Supprimer le fichier présent dans le compartiment S3 puis supprimer le compartiment
 - Supprimer la fonction Lambda

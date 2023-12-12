@@ -3,6 +3,7 @@
 ## Découverte de Docker
 
 - Lancer un premier conteneur : `docker run -d -p 80:80 marcincuber/2048-game:latest`
+    - La commande permet de, s'il n'existe pas en local, récupérer une image sur le repository Dockerhub et de lancer le conteneur associé.
 - Accéder à la webapp (dans Gitpod > onglet *Ports* > Port *80*)
 - Utiliser `docker ps` pour lister les conteneurs présents et récupérer l'id des conteneurs
 - Utiliser `docker logs <containerId>` pour récupérer les logs de conteneur
@@ -23,11 +24,11 @@ docker run \
     -d \
     docker.io/library/mariadb:10.3
 ```
-- Description de la commande `docker run`
-  - L'option `-e` permet de définir un paramètre pour le conteneur
-  - `-p` permet de faire du mapping de port (par défaut, les ports du conteneur ne sont pas accessibles)
-  - `-d` permet de lancer le conteneur en mode détaché (i.e. en tâche de fond)
-  - `docker.io/library/mariadb:10.3` indique le nom et la version de l'image à utiliser
+- Description des paramètres
+    - L'option `-e` permet de définir un paramètre pour le conteneur
+    - `-p` permet de faire du mapping de port (par défaut, les ports du conteneur ne sont pas accessibles)
+    - `-d` permet de lancer le conteneur en mode détaché (i.e. en tâche de fond)
+    - `docker.io/library/mariadb:10.3` indique le nom et la version de l'image à utiliser
 - Récupérer l'id du conteneur et accéder aux logs de celui-ci
   - Quelles sont les dernières lignes de logs ?
         <details>
@@ -53,7 +54,7 @@ docker run \
     - Lancer la commande de build de l'image : `docker build . -t lab-api`
         - l'option `-t` permet d'indique le nom de l'image
 - Lancer le conteneur avec :
-    - Mapping de port `80` -> `80`
+    - Mapping de port `8080` -> `8080`
     - `network` : `host`
             <details>
             <summary>Solution</summary>
@@ -87,3 +88,12 @@ docker run \
         - Pour builder l'image : `docker build . -t lab-web`
         - Pour lancer le conteneur : `docker run -p 80:80 --network host lab-web`
         </details>
+- Supprimer les conteneur
+
+## Exploration du contenu d'un conteneur démarré
+- Lancer un conteneur avec l'image `nginx`
+- Ouvrer un bash dans le conteneur avec `docker exec -it <containerId> bash`
+    - Vous êtes maintenant connecté dans le conteneur
+    - Exécuter la commande `ls /usr/share/nginx/html/` (`ls` permet de lister les fichiers dans un dossier). Que voyez vous ?
+- Ouvrer un nouveau terminal
+    - Exécuter la commande `ls /usr/share/nginx/html/` (`ls` permet de lister les fichiers dans un dossier). Que voyez vous ?
