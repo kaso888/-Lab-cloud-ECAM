@@ -1,18 +1,22 @@
 # Lab - Partie 3 - Découverte de Docker
 
-## Découverte de Docker
+## Découverte de la CLI Docker
 
 - Lancer un premier conteneur : `docker run -d -p 80:80 marcincuber/2048-game:latest`
     - La commande permet de, s'il n'existe pas en local, récupérer une image sur le repository Dockerhub et de lancer le conteneur associé.
-- Accéder à la webapp (dans Gitpod > onglet *Ports* > Port *80*)
+    - Accéder à la webapp (dans Gitpod > onglet *Ports* > Port *80*)
+- Lancer un deuxième conteneur (un serveur web NGINX): `docker run -d -p 8080:80 nginx` 
 - Utiliser `docker ps` pour lister les conteneurs présents et récupérer l'id des conteneurs
-- Utiliser `docker logs <containerId>` pour récupérer les logs de conteneur
-- Arrêter le conteneur avec `docker stop <containerId>` et vérifier que l'application ne fonctionne plus
-- Arrêter le conteneur avec `docker start <containerId>` et vérifier que l'application refonctionne
-- Arrêter le conteneur et supprimer le `docker rm <containerId>`
+- Utiliser `docker logs <containerId>` pour récupérer les logs du conteneur NGINX
+- Arrêter le conteneur NGINX avec `docker stop <containerId>` et vérifier que l'application ne fonctionne plus
+- Démarrer le conteneur NGINX avec `docker start <containerId>` et vérifier que l'application refonctionne
+- Arrêter les conteneur et supprimer les avec `docker rm <containerId>`
 
+## Déploiement de l'application du premier lab
 
-## Lancement d'un conteneur MariaDB
+L'objectif de cette partie est de déployer l'application du premier lab sur Docker.
+
+### Lancement d'un conteneur MariaDB
 - Lancer un conteneur MariaDB avec la commande suivante :
 ```sh
 docker run \
@@ -40,10 +44,7 @@ docker run \
         ```
         </details>
 
-
-
-
-## Build et lancement de l'image Docker pour le composant API
+### Build et lancement de l'image Docker pour le composant API
 - Dans le dossier `lab/docker/api`, un `Dockerfile` est présent pour pouvoir builder l'image. Consulter le contenu du fichier : 
     - Le mot-clé `FROM` permet d'indiquer l'image de base 
     - `COPY` permet de copier les ressources de l'application depuis le dossier local vers l'image (ici le binaire `lab-api` et le fichier de configuration)
@@ -62,7 +63,7 @@ docker run \
             </details>
 
 
-## Création d'une image Docker pour le composant web
+### Création d'une image Docker pour le composant web
 - Dans le dossier `lab/docker/web`, créer un `Dockerfile` avec les éléments suivants :
     - Image de base : `nginx:1.25.3`
     - Nom de la nouvelle image `lab-web`
@@ -89,11 +90,3 @@ docker run \
         - Pour lancer le conteneur : `docker run -p 80:80 --network host lab-web`
         </details>
 - Supprimer les conteneur
-
-## Exploration du contenu d'un conteneur démarré
-- Lancer un conteneur avec l'image `nginx`
-- Ouvrer un bash dans le conteneur avec `docker exec -it <containerId> bash`
-    - Vous êtes maintenant connecté dans le conteneur
-    - Exécuter la commande `ls /usr/share/nginx/html/` (`ls` permet de lister les fichiers dans un dossier). Que voyez vous ?
-- Ouvrer un nouveau terminal
-    - Exécuter la commande `ls /usr/share/nginx/html/` (`ls` permet de lister les fichiers dans un dossier). Que voyez vous ?

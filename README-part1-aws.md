@@ -313,7 +313,8 @@ Il peut être utilisé pour exposer des [sites web static](https://docs.aws.amaz
 ```
 - Charger dans le bucket le fichier [index.html](https://gitlab.com/ecam-ssg/lab/-/raw/main/lab/s3/index.html?ref_type=heads) (présent dans ce repo)
 - Accéder au fichier chargé sur S3 et cliquer sur l'`URL de l'objet`. Un onglet s'ouvre avec un formulaire contenant `Valeur 1` et `Valeur 2`.
-- Tester puis corriger le fichier `index.html` 
+- Tester et constater que le formulaire ne fonctionne pas.
+- Corriger le fichier `index.html` et retester 
     - Avant de réuploader le fichier, il faudra le supprimer sur S3
 
 ### Nettoyage
