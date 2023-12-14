@@ -5,12 +5,13 @@
 - Lancer un premier conteneur : `docker run -d -p 80:80 marcincuber/2048-game:latest`
     - La commande permet de, s'il n'existe pas en local, récupérer une image sur le repository Dockerhub et de lancer le conteneur associé.
     - Accéder à la webapp (dans Gitpod > onglet *Ports* > Port *80*)
-- Lancer un deuxième conteneur (un serveur web NGINX): `docker run -d -p 8080:80 nginx` 
+- Lancer un deuxième conteneur (un serveur web NGINX) : `docker run -d -p 8080:80 nginx` 
+    - Accéder à la webapp (dans Gitpod > onglet *Ports* > Port *8080*)
 - Utiliser `docker ps` pour lister les conteneurs présents et récupérer l'id des conteneurs
-- Utiliser `docker logs <containerId>` pour récupérer les logs du conteneur NGINX
-- Arrêter le conteneur NGINX avec `docker stop <containerId>` et vérifier que l'application ne fonctionne plus
-- Démarrer le conteneur NGINX avec `docker start <containerId>` et vérifier que l'application refonctionne
-- Arrêter les conteneur et supprimer les avec `docker rm <containerId>`
+- Utiliser `docker logs $CONTAINER_ID` pour récupérer les logs du conteneur NGINX
+- Arrêter le conteneur NGINX avec `docker stop $CONTAINER_ID` et vérifier que l'application ne fonctionne plus en accédant à son URL
+- Démarrer le conteneur NGINX avec `docker start $CONTAINER_ID` et vérifier que l'application refonctionne
+- Arrêter les conteneurs et supprimer les avec `docker rm $CONTAINER_ID`
 
 ## Déploiement de l'application du premier lab
 
@@ -29,14 +30,14 @@ docker run \
     docker.io/library/mariadb:10.3
 ```
 - Description des paramètres
-    - L'option `-e` permet de définir un paramètre pour le conteneur
+    - L'option `-e` permet de définir un paramètre pour le conteneur. Elle est utilisée pour paramétrer l'utilisateur et le mot de passe
     - `-p` permet de faire du mapping de port (par défaut, les ports du conteneur ne sont pas accessibles)
     - `-d` permet de lancer le conteneur en mode détaché (i.e. en tâche de fond)
     - `docker.io/library/mariadb:10.3` indique le nom et la version de l'image à utiliser
 - Récupérer l'id du conteneur et accéder aux logs de celui-ci
   - Quelles sont les dernières lignes de logs ?
         <details>
-        <summary>Solution</summary>
+        <summary>Réponse</summary>
         ```
         2023-12-11 17:13:12 0 [Note] Added new Master_info '' to hash table
         2023-12-11 17:13:12 0 [Note] mysqld: ready for connections.
@@ -84,9 +85,5 @@ docker run \
         COPY lab-web/ /var/www/html
         COPY default.conf /etc/nginx/conf.d
         ```
-
-        Commande à lancer :
-        - Pour builder l'image : `docker build . -t lab-web`
-        - Pour lancer le conteneur : `docker run -p 80:80 --network host lab-web`
         </details>
-- Supprimer les conteneur
+- Supprimer les conteneurs
