@@ -54,7 +54,7 @@ users-->ec2_web
 - Sur `EC2 Web` : un serveur NGINX est déployé et écoute sur le port `80`. Il permet de :
     - Exposer les ressources React (html, js, css, etc.) lors de l'accès sur la racine du serveur
     - Jouer le rôle de reverse proxy pour les API : les appels sur le `\api` sont routées vers l'instance `EC2 API` sur le port `8080`
-- Sur `EC2 API` : une application java est déployée et écoute sur le port `8080`. Elle accède à la base de données `RDS MariaDB`.
+- Sur `EC2 API` : une application GO est déployée et écoute sur le port `8080`. Elle accède à la base de données `RDS MariaDB`.
 - `RDS Maria DB` est une base de données MariaDB qui écoute sur le port `3306`.
 
 *Remarque :* Cette architecture ne respecte pas les bonnes pratiques. En principe, `EC2 API` et `RDS Maria DB` aurait dû être déployés dans des subnets privés.
@@ -76,13 +76,13 @@ Le service permet d'utiliser sept moteurs : Amazon Aurora compatible avec MySQL,
     - Informations
         - Identifiant d'instance de base de données : `${PRENOM}-db`
         - Mode : création standard
-        - Moteur : dernière version de MariaDB 
+        - Moteur : version 10.6.11 de MariaDB
         - Modèle : **Offre gratuite** - db.t2.micro
         - Identifiant principal : `admin`
         - Mot de passe : `Ecam123!`
         - Stockage alloué : 20Go
         - Dans *Connectivité*, Groupes de sécurité VPC existants : sélectionner `db-sg`
-        - Dans `Configuration supplémentaire`, Nom de la base de données initiale : `lab`
+        - Dans le bloc *Configuration supplémentaire* (en dessous de *Surveillance*), Nom de la base de données initiale : `lab`
 - La création de l'instance va prendre 5/10 minutes. Passer à la suite.
 
 ## Création d'une VM pour l'application React via AWS EC2
@@ -95,9 +95,9 @@ Le service permet d'utiliser sept moteurs : Amazon Aurora compatible avec MySQL,
 - Créer une instance EC2
 	- Nom : `${PRENOM}-web-ec2`
     - Image OS : `Ubuntu 22.04 LTS`
-	- Type d'instance : `t3.micro`
+	- Type d'instance : `t2.micro`
 	- Paire de clé : `admin-key`
-	- Groupe de sécurité (Pare-feu) : `web-sg`
+	- Groupe de sécurité (Pare-feu) : sélectionner le groupe existant `web-sg`
 - Après quelques minutes : l'instance est disponible
 - Accéder à la description de l'instance (Menu à gauche > Instances > Cliquer sur l'id de votre instance)
     - Noter la valeur de `DNS IPv4 public`. Cet URL vous permettra d'accéder à l'API via votre navigateur
@@ -107,7 +107,7 @@ Le service permet d'utiliser sept moteurs : Amazon Aurora compatible avec MySQL,
     - Sélectionner `EC2 Instance Connecter` puis cliquer sur `Se connecter`. Un terminal s'ouvre dans un nouvel onglet
     - Exécuter le script d'installation : `curl https://gitlab.com/ecam-ssg/lab/-/raw/main/lab/web/init-vm-web.sh | bash`
     - Le script se termine avec `Web app started`
-- Vérifier son fonctionnement en accédant via un navigateur à `http://${DNS_IPV4_PUBLIC}` (attention : il faut enlever le `s` de `https`). Une application web de création de notes doit apparaitre. En haut, le schéma de l'architecture est présent : les blocs API et base de données sont en rouge.
+- Vérifier son fonctionnement en accédant via un navigateur à `http://${DNS_IPV4_PUBLIC}` (attention : il faut enlever le `s` de `https`). Une application web de création de notes doit apparaitre. En haut, le schéma de l'architecture est présent : les blocs API et base de données sont en rouge. Les étapes suivantes vont permettre de faire fonctionner l'API et l'accès à la base de données.
 
 
 
@@ -118,14 +118,14 @@ Le service permet d'utiliser sept moteurs : Amazon Aurora compatible avec MySQL,
 - Créer une instance EC2
 	- Nom : `${PRENOM}-api-ec2`
     - Image OS : `Ubuntu 22.04 LTS`
-	- Type d'instance : `t3.micro`
+	- Type d'instance : `t2.micro`
 	- Paire de clé : `admin-key`
-	- Groupe de sécurité (Pare-feu) : `api-sg`
+	- Groupe de sécurité (Pare-feu) : sélectionner le groupe existant `api-sg`
 - Après quelques minutes : l'instance est disponible
 - Accéder à la description de l'instance (Menu à gauche > instances > Cliquer sur le nom de votre instance)
     - Noter la valeur de `DNS IPv4 public`. Cet URL vous permettra d'accéder à l'API via votre navigateur
     - Vérifier que l'état est `En cours d'exécution`
-- Installation de l'application API Java
+- Installation de l'application API en GO
     - Depuis la page de l'instance, cliquer sur `Se connecter`
     - Sélectionner `EC2 Instance Connector` puis cliquer sur `Se connecter`. Un terminal s'ouvre dans un nouvel onglet
     - Exécuter le script d'installation : `curl https://gitlab.com/ecam-ssg/lab/-/raw/main/lab/api/init-vm-api-maria.sh | bash`
@@ -146,7 +146,7 @@ Les deux instances EC2 et la base de données ont été créées mais elles ne c
 
         </details>
     - Après correction, redémarrer le serveur Nginx : `sudo systemctl restart nginx.service`.
-- Après quelques instants, le lien entre l'application React et l'API doit être fonctionnelle.
+- Après quelques instants, le lien entre l'application React et l'API doit être fonctionnel.
     - Retourner sur l'URL de l'application React et constater que le bloc API est vert
 
 ### Connexion entre l'API et la base de données
@@ -162,16 +162,15 @@ Les deux instances EC2 et la base de données ont été créées mais elles ne c
 
         </details>
 
-- Après quelques instants, l'application devrait être disponible
-    - Vérifier son fonctionnement en accédant via un navigateur à `http://${DNS_IPV4_PUBLIC_API}:8080/api/place/1`
-    - Un JSON doit apparaître.
+- Après quelques instants, le lien entre l'application API et la BDD doit être fonctionnel.
+    - Retourner sur l'URL de l'application React et constater que le bloc BDD est vert
 
 
 
 ## Nettoyage
 Supprimer les ressources créées :
 - RDS 
-    - Sur la page listant les bases, sélectionner la base et cliquer sur `Modifier` > `Supprimer`
+    - Sur la page listant les bases, sélectionner la base et cliquer sur `Action` > `Supprimer`
     - Décocher les cases `Créer un instantané final ?` et `Conserver les sauvegardes automatiques`, et cocher `Je reconnais qu'au moment de la suppression de l'instance, les sauvegardes automatiques, y compris les instantanés système et la récupération à un moment donné, ne seront plus disponibles.`
     - Supprimer l'instance
 - EC2 
@@ -179,6 +178,7 @@ Supprimer les ressources créées :
     - Cliquer sur `Etat de l'instance` > `Résilier`
 
 
+<br/><br/><br/><br/><br/>
 
 ---
 <br/><br/><br/><br/><br/>
@@ -256,7 +256,10 @@ L'application à déployer est un multiplicateur :
     - Techno : `Node.js 20.x`
     - Role : utiliser un role existant : `add-lambda-role-5wn8pt93`
     - Dans paramètres avancés, activer `Activer l'URL de fonction` avec l'authentification `NONE` afin d'avoir accès à la fonction depuis un navigateur
-    - Code source :
+- Depuis la page de la fonction, 
+    - Récupérer l'`URL de fonction`
+    - Modifier le code source et cliquer sur `Déployer` :
+        - Ce code va permettre de sommer les paramètres `val1` et `val2`passés en paramètres de l'URL.
 ```javascript 
 export const handler = async(event) => {
     console.log("Received event: ", event);
@@ -272,9 +275,9 @@ export const handler = async(event) => {
     return response;
 };
 ```
-- Depuis la page de la fonction, récupérer l'`URL de fonction`
-- Via un navigateur, accéder à l'url `https://${URL_FONCTION}?val1=1&val2=14`
+- Via un navigateur, accéder à l'url `https://${URL_FONCTION}?val1=3&val2=14`
 - Modifier la fonction pour réaliser une multiplication au lieu d'une addition
+- Redéployer et retester
 
 ## Déploiemet d'un site web static via AWS S3
 ### Description de AWS S3
@@ -290,7 +293,8 @@ Il peut être utilisé pour exposer des [sites web static](https://docs.aws.amaz
     - Region `eu-west-3`
     - Décocher `Bloquer tous les accès publics` et cocher la case  `Je suis conscient, qu'avec les paramètres actuels, ce compartiment et les objets qu'il contient peuvent devenir publics.`
 - Accéder au compartiment et modifier la `Stratégie de compartiment` dans l'onglet `Autorisations`
-    - Politique de sécurité
+    - Cela va permettre de rendre accessible les objets présents dans le bucket. 
+    - Attention à remplacer `${PRENOM}`
 ```json
 {
     "Version": "2012-10-17",
@@ -312,8 +316,10 @@ Il peut être utilisé pour exposer des [sites web static](https://docs.aws.amaz
 ```
 - Charger dans le bucket le fichier [index.html](https://gitlab.com/ecam-ssg/lab/-/raw/main/lab/s3/index.html?ref_type=heads) (présent dans ce repo)
 - Accéder au fichier chargé sur S3 et cliquer sur l'`URL de l'objet`. Un onglet s'ouvre avec un formulaire contenant `Valeur 1` et `Valeur 2`.
-- Tester puis corriger le fichier `index.html`
+- Tester et constater que le formulaire ne fonctionne pas.
+- Corriger le fichier `index.html` et retester 
+    - Avant de réuploader le fichier, il faudra le supprimer sur S3
 
 ### Nettoyage
-- Supprimer le fichier présent dans le compatiment S3 puis supprimer le compartiment
+- Supprimer le fichier présent dans le compartiment S3 puis supprimer le compartiment
 - Supprimer la fonction Lambda

@@ -1,17 +1,23 @@
 # Lab - Partie 3 - Découverte de Docker
 
-## Découverte de Docker
+## Découverte de la CLI Docker
 
 - Lancer un premier conteneur : `docker run -d -p 80:80 marcincuber/2048-game:latest`
-- Accéder à la webapp (dans Gitpod > onglet *Ports* > Port *80*)
+    - La commande permet de, s'il n'existe pas en local, récupérer une image sur le repository Dockerhub et de lancer le conteneur associé.
+    - Accéder à la webapp (dans Gitpod > onglet *Ports* > Port *80*)
+- Lancer un deuxième conteneur (un serveur web NGINX) : `docker run -d -p 8080:80 nginx` 
+    - Accéder à la webapp (dans Gitpod > onglet *Ports* > Port *8080*)
 - Utiliser `docker ps` pour lister les conteneurs présents et récupérer l'id des conteneurs
-- Utiliser `docker logs <containerId>` pour récupérer les logs de conteneur
-- Arrêter le conteneur avec `docker stop <containerId>` et vérifier que l'application ne fonctionne plus
-- Arrêter le conteneur avec `docker start <containerId>` et vérifier que l'application refonctionne
-- Arrêter le conteneur et supprimer le `docker rm <containerId>`
+- Utiliser `docker logs $CONTAINER_ID` pour récupérer les logs du conteneur NGINX
+- Arrêter le conteneur NGINX avec `docker stop $CONTAINER_ID` et vérifier que l'application ne fonctionne plus en accédant à son URL
+- Démarrer le conteneur NGINX avec `docker start $CONTAINER_ID` et vérifier que l'application refonctionne
+- Arrêter les conteneurs et supprimer les avec `docker rm $CONTAINER_ID`
 
+## Déploiement de l'application du premier lab
 
-## Lancement d'un conteneur MariaDB
+L'objectif de cette partie est de déployer l'application du premier lab sur Docker.
+
+### Lancement d'un conteneur MariaDB
 - Lancer un conteneur MariaDB avec la commande suivante :
 ```sh
 docker run \
@@ -23,15 +29,15 @@ docker run \
     -d \
     docker.io/library/mariadb:10.3
 ```
-- Description de la commande `docker run`
-  - L'option `-e` permet de définir un paramètre pour le conteneur
-  - `-p` permet de faire du mapping de port (par défaut, les ports du conteneur ne sont pas accessibles)
-  - `-d` permet de lancer le conteneur en mode détaché (i.e. en tâche de fond)
-  - `docker.io/library/mariadb:10.3` indique le nom et la version de l'image à utiliser
+- Description des paramètres
+    - L'option `-e` permet de définir un paramètre pour le conteneur. Elle est utilisée pour paramétrer l'utilisateur et le mot de passe
+    - `-p` permet de faire du mapping de port (par défaut, les ports du conteneur ne sont pas accessibles)
+    - `-d` permet de lancer le conteneur en mode détaché (i.e. en tâche de fond)
+    - `docker.io/library/mariadb:10.3` indique le nom et la version de l'image à utiliser
 - Récupérer l'id du conteneur et accéder aux logs de celui-ci
   - Quelles sont les dernières lignes de logs ?
         <details>
-        <summary>Solution</summary>
+        <summary>Réponse</summary>
         ```
         2023-12-11 17:13:12 0 [Note] Added new Master_info '' to hash table
         2023-12-11 17:13:12 0 [Note] mysqld: ready for connections.
@@ -39,10 +45,7 @@ docker run \
         ```
         </details>
 
-
-
-
-## Build et lancement de l'image Docker pour le composant API
+### Build et lancement de l'image Docker pour le composant API
 - Dans le dossier `lab/docker/api`, un `Dockerfile` est présent pour pouvoir builder l'image. Consulter le contenu du fichier : 
     - Le mot-clé `FROM` permet d'indiquer l'image de base 
     - `COPY` permet de copier les ressources de l'application depuis le dossier local vers l'image (ici le binaire `lab-api` et le fichier de configuration)
@@ -53,15 +56,15 @@ docker run \
     - Lancer la commande de build de l'image : `docker build . -t lab-api`
         - l'option `-t` permet d'indique le nom de l'image
 - Lancer le conteneur avec :
-    - Mapping de port `80` -> `80`
+    - Mapping de port `8080` -> `8080`
     - `network` : `host`
             <details>
             <summary>Solution</summary>
-            `docker run -p 8080:8080 --network host lab-api`
+            `docker run -p 8080:8080 -d --network host lab-api`
             </details>
 
 
-## Création d'une image Docker pour le composant web
+### Création d'une image Docker pour le composant web
 - Dans le dossier `lab/docker/web`, créer un `Dockerfile` avec les éléments suivants :
     - Image de base : `nginx:1.25.3`
     - Nom de la nouvelle image `lab-web`
@@ -82,8 +85,5 @@ docker run \
         COPY lab-web/ /var/www/html
         COPY default.conf /etc/nginx/conf.d
         ```
-
-        Commande à lancer :
-        - Pour builder l'image : `docker build . -t lab-web`
-        - Pour lancer le conteneur : `docker run -p 80:80 --network host lab-web`
         </details>
+- Supprimer les conteneurs
