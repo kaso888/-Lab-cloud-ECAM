@@ -17,6 +17,8 @@
 
 ## Aide
 - Vous pouvez vous appuyer sur le support de cours Terraform présent dans lab/terraform/2023-12-15 Support terraform.pptx
+- Si vous ne vous en sortez pas, n'hésitez pas à demander
+- Les réponses se trouvent dans lab/terraform/aws.zip protégé par mot de passe :-)
 
 ## Initialisation de l'environnement
 ### Mise en place de l'environnement Terraform
@@ -74,6 +76,118 @@ rerun this command to reinitialize your working directory. If you forget, other
 commands will detect it and remind you to do so if necessary.
 ```
 
+### Création des groupes de sécurité pour les instances ec2 à déployer
+- Créer un nouveau fichier terraform security.tf puis ajouter le contenu suivant en remplaçant <TRI> par votre trigrame :
+```
+resource "aws_security_group" "web-sg" {
+  name        = "web-sg-<TRI>"
+  description = "Allow inbound traffic to Web Server"
+  vpc_id      = "vpc-0f94b22e7479bcb8f"
+
+  ingress {
+    description      = "TLS from VPC"
+    from_port        = 443
+    to_port          = 443
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  ingress {
+    description      = "HTTP from VPC"
+    from_port        = 80
+    to_port          = 80
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  ingress {
+    description      = "SSH from VPC"
+    from_port        = 22
+    to_port          = 22
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  tags = {
+    Name = "WebServer-sg-<TRI>"
+  }
+}
+
+resource "aws_security_group" "api-sg" {
+  name        = "api-sg-<TRI>"
+  description = "Allow inbound traffic to API Server"
+  vpc_id      = "vpc-0f94b22e7479bcb8f"
+
+  ingress {
+    description      = "HTTP from VPC"
+    from_port        = 8080
+    to_port          = 8080
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  ingress {
+    description      = "SSH from VPC"
+    from_port        = 22
+    to_port          = 22
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  tags = {
+    Name = "APIServer-sg-<TRI>"
+  }
+}
+
+resource "aws_security_group" "db-sg" {
+  name        = "db-sg-<TRI>"
+  description = "Allow inbound traffic to data server"
+  vpc_id      = "vpc-0f94b22e7479bcb8f"
+
+  ingress {
+    description      = "MYSQL/AURA from VPC"
+    from_port        = 3306
+    to_port          = 3306
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  tags = {
+    Name = "DataServer-sg-<TRI>"
+  }
+}
+
+resource "aws_security_group" "all-sg" {
+  name        = "allserver-sg-<TRI>"
+  description = "Allow outbound traffic to all servers"
+  vpc_id      = "vpc-0f94b22e7479bcb8f"
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  tags = {
+    Name = "AllServer-out-sg-<TRI>"
+  }
+}
+```
+
+- Lancer la commande terraform pour valider la configuration
+	- vous devriez avoir 4 ressources à créer
+- Une fois la validation effectuée, lancer la commande d'application de la configuration en confirmant l'action lorsque demandé
+- Se rendre sur la console AWS et constater l'apparition des nouvelles ressources
+
+
 ### Création de l'instance EC2 API server
 - Pour personnaliser l'installation de l'instance ec2, créer un script user-data-api.sh et ajouter les lignes suivantes :
 ```
@@ -86,7 +200,7 @@ curl https://gitlab.com/ecam-ssg/lab/-/raw/main/lab/api/init-vm-api-local.sh | b
 	- nom de la ressource : api_server (par exemple, doit être un nom unique dans le même workspace terraform)
 	- identifiant de l'image : ami-0493936afbe820b28 (correspondant à une image ubuntu)
 	- gabarit de l'instance : t2.micro
-	- groupes de sécurité : sg-0bf7647eff69c1ab8, sg-02a1b3aab9fa88823
+	- groupes de sécurité : [aws_security_group.all-sg.id,aws_security_group.api-sg.id]
 	- nom de l'instance dans l'ihm aws : API_Server_TRIGRAMME (TRIGRAMME : 1iere lettre prenom + 2 1iere lettre nom)
 	- déclarer le script user-data-api.sh dans la configuration de l'instance
 - Lancer la commande terraform pour valider la configuration
@@ -112,7 +226,7 @@ instance_api_server_public_ip = "13.37.240.116"
 
 ### Création de l'instance EC2 Web server
 - Pour personnaliser l'installation de l'instance ec2, créer un script user-data-web.sh et ajoute les commandes suivantes en remplaçant 
- ${DNS_IPV4_PUBLIC_API} par l'adresse ip obtenue à l'étape précédente
+ ${DNS_IPV4_PUBLIC_API} par l'adresse ip publique obtenue à l'étape précédente
 ```
 #!/bin/bash
 curl https://gitlab.com/ecam-ssg/lab/-/raw/main/lab/web/init-vm-web.sh | bash
@@ -125,7 +239,7 @@ sudo systemctl restart nginx.service
 	- nom de la ressource : web_server (par exemple, doit être un nom unique dans le même workspace terraform)
 	- identifiant de l'image : ami-0493936afbe820b28 (correspondant à une image ubuntu)
 	- gabarit de l'instance : t2.micro
-	- groupes de sécurité : sg-0bf7647eff69c1ab8, sg-02a1b3aab9fa88823
+	- groupes de sécurité : [aws_security_group.all-sg.id,aws_security_group.web-sg.id]
 	- nom de l'instance dans l'ihm aws : Web_Server_TRIGRAMME (TRIGRAMME : 1iere lettre prenom + 2 1iere lettre nom)
 	- déclarer le script user-data-web.sh dans la configuration de l'instance
 - Lancer la commande terraform pour valider la configuration
