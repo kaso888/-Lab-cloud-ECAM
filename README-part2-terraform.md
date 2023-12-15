@@ -15,8 +15,8 @@
 - Déployer les instances EC2
 - Personnaliser les instances lors du primo déploiement (cloud-init)
 
-## Aide
-- Vous pouvez vous appuyer sur le support de cours Terraform présent dans lab/terraform/2023-12-15 Support terraform.pptx
+## Aide à la bonne exécution du LAB
+- Vous pouvez vous appuyer sur le support de cours Terraform présent dans lab/terraform/2023-12-15 Support terraform.pdf
 - Si vous ne vous en sortez pas, n'hésitez pas à demander
 - Les réponses se trouvent dans lab/terraform/aws.zip protégé par mot de passe :-)
 
@@ -40,11 +40,15 @@ on linux_amd64
 - Exporter les variables d'environnement suivantes avec les contenus communiqués au démarrage du LAB :
 	- AWS_ACCESS_KEY_ID : l'id de la clé d'accès
 	- AWS_SECRET_ACCESS_KEY : le secret de la clé
-- Ces variables constituent les crendentials pour joindre l'api AWS depuis Terraform
+- Pour exporter une variable, utiliser la commande export de la manière suivante
+```
+export VARIABLE=valeur
+```
+- Ces variables constituent les credentials pour joindre l'api AWS depuis le client Terraform
 
 ## Provisioning des ressources via Terraform
 ### Création du provider AWS
-- Dans le répertoire workspace, créer un fichier provider.tf avec les déclarations suivantes (voir slide 12 du support) :
+- Dans le répertoire workspace, créer un fichier provider.tf avec les déclarations suivantes (voir slide 4 du support) :
 	- la version minimum du provider AWS : 4.16
 	- la version minimum de Terraform : 1.2.0
 	- provider AWS
@@ -195,7 +199,7 @@ resource "aws_security_group" "all-sg" {
 curl https://gitlab.com/ecam-ssg/lab/-/raw/main/lab/api/init-vm-api-local.sh | bash
 ```
 
-- Créer un nouveau fichier terraform et déclarer la ressource ec2 api server avec les caractéristiques suivantes (voir slide 15 du support) :
+- Créer un nouveau fichier terraform et déclarer la ressource ec2 api server avec les caractéristiques suivantes (voir slide 7 du support) :
 	- type de la ressource : aws_instance
 	- nom de la ressource : api_server (par exemple, doit être un nom unique dans le même workspace terraform)
 	- identifiant de l'image : ami-0493936afbe820b28 (correspondant à une image ubuntu)
@@ -211,7 +215,7 @@ curl https://gitlab.com/ecam-ssg/lab/-/raw/main/lab/api/init-vm-api-local.sh | b
 ### Récupération d'output pour l'instance EC2 API Server
 Pour pouvoir configurer le lien entre l'instance Web et l'instance API, il faut que vous récupériez avec Terraform l'adresse ip publique en IPV4 de l'instance
 API précédemment créée. Pour cela :
-- Créer un nouveau fichier terraform output.tf par exemple et déclarer la sortie suivante de l'instance API Server (voir slide 15 du support) :
+- Créer un nouveau fichier terraform output.tf par exemple et déclarer la sortie suivante de l'instance API Server (voir slide 8 du support) :
 	- id
 	- public_ip
 - Lancer la commande terraform pour valider la configuration
