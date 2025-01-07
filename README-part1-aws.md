@@ -76,8 +76,8 @@ Le service permet d'utiliser sept moteurs : Amazon Aurora compatible avec MySQL,
     - Informations
         - Identifiant d'instance de base de données : `${PRENOM}-db`
         - Mode : création standard
-        - Moteur : version 10.6.11 de MariaDB
-        - Modèle : **Offre gratuite** - db.t2.micro
+        - Moteur : version la plus récente (11.4.4) de MariaDB
+        - Modèle : **Offre gratuite** - db.t4g.micro
         - Identifiant principal : `admin`
         - Mot de passe : `Ecam123!`
         - Stockage alloué : 20Go
@@ -94,7 +94,7 @@ Le service permet d'utiliser sept moteurs : Amazon Aurora compatible avec MySQL,
 - Accéder au [service EC2](https://eu-west-3.console.aws.amazon.com/ec2/home?region=eu-west-3#Home:) via la console 
 - Créer une instance EC2
 	- Nom : `${PRENOM}-web-ec2`
-    - Image OS : `Ubuntu 22.04 LTS`
+    - Image OS : `Ubuntu 24.04 LTS`
 	- Type d'instance : `t2.micro`
 	- Paire de clé : `admin-key`
 	- Groupe de sécurité (Pare-feu) : sélectionner le groupe existant `web-sg`
@@ -117,7 +117,7 @@ Le service permet d'utiliser sept moteurs : Amazon Aurora compatible avec MySQL,
 - Accéder au [service EC2](https://eu-west-3.console.aws.amazon.com/ec2/home?region=eu-west-3#Home:) via la console 
 - Créer une instance EC2
 	- Nom : `${PRENOM}-api-ec2`
-    - Image OS : `Ubuntu 22.04 LTS`
+    - Image OS : `Ubuntu 24.04 LTS`
 	- Type d'instance : `t2.micro`
 	- Paire de clé : `admin-key`
 	- Groupe de sécurité (Pare-feu) : sélectionner le groupe existant `api-sg`
