@@ -254,7 +254,8 @@ sudo systemctl restart nginx.service
 - Se rendre sur la console AWS et constater l'apparition de la nouvelle ressource
 
 ### Tests de l'application
-- Vous pouvez dérouler les mêmes tests de l'application réalisés pour le lab n°1
+- Récupérer l'adresse ip publique de l'instance EC2 Web Server
+- Dans un navigateur, accéder à l'url http://<ip_publique> et tester l'application
 
 ## Destruction des ressources via Terraform
 ### Libération des ressources
