@@ -88,7 +88,7 @@ commands will detect it and remind you to do so if necessary.
 resource "aws_security_group" "web-sg" {
   name        = "web-sg-<TRI>"
   description = "Allow inbound traffic to Web Server"
-  vpc_id      = "vpc-0f94b22e7479bcb8f"
+  vpc_id      = "vpc-0f737abec0d5a7271"
 
   ingress {
     description      = "TLS from VPC"
@@ -125,7 +125,7 @@ resource "aws_security_group" "web-sg" {
 resource "aws_security_group" "api-sg" {
   name        = "api-sg-<TRI>"
   description = "Allow inbound traffic to API Server"
-  vpc_id      = "vpc-0f94b22e7479bcb8f"
+  vpc_id      = "vpc-0f737abec0d5a7271"
 
   ingress {
     description      = "HTTP from VPC"
@@ -153,7 +153,7 @@ resource "aws_security_group" "api-sg" {
 resource "aws_security_group" "db-sg" {
   name        = "db-sg-<TRI>"
   description = "Allow inbound traffic to data server"
-  vpc_id      = "vpc-0f94b22e7479bcb8f"
+  vpc_id      = "vpc-0f737abec0d5a7271"
 
   ingress {
     description      = "MYSQL/AURA from VPC"
@@ -172,7 +172,7 @@ resource "aws_security_group" "db-sg" {
 resource "aws_security_group" "all-sg" {
   name        = "allserver-sg-<TRI>"
   description = "Allow outbound traffic to all servers"
-  vpc_id      = "vpc-0f94b22e7479bcb8f"
+  vpc_id      = "vpc-0f737abec0d5a7271"
 
   egress {
     from_port        = 0
