@@ -204,7 +204,7 @@ curl https://gitlab.com/ecam-ssg/lab/-/raw/main/lab/api/init-vm-api-local.sh | b
 - Créer un nouveau fichier terraform et déclarer la ressource ec2 api server avec les caractéristiques suivantes (voir slide 7 du support) :
 	- type de la ressource : aws_instance
 	- nom de la ressource : api_server (par exemple, doit être un nom unique dans le même workspace terraform)
-	- identifiant de l'image : ami-0493936afbe820b28 (correspondant à une image ubuntu)
+	- identifiant de l'image : ami-09be70e689bddcef5 (correspondant à une image ubuntu)
 	- gabarit de l'instance : t2.micro
 	- groupes de sécurité : [aws_security_group.all-sg.id,aws_security_group.api-sg.id]
 	- nom de l'instance dans l'ihm aws : API_Server_TRIGRAMME (TRIGRAMME : 1iere lettre prenom + 2 1iere lettre nom)
@@ -243,7 +243,7 @@ sudo systemctl restart nginx.service
 - Créer un nouveau fichier terraform et déclarer la ressource ec2 web server avec les caractéristiques suivantes :
 	- type de la ressource : aws_instance
 	- nom de la ressource : web_server (par exemple, doit être un nom unique dans le même workspace terraform)
-	- identifiant de l'image : ami-0493936afbe820b28 (correspondant à une image ubuntu)
+	- identifiant de l'image : ami-09be70e689bddcef5 (correspondant à une image ubuntu)
 	- gabarit de l'instance : t2.micro
 	- groupes de sécurité : [aws_security_group.all-sg.id,aws_security_group.web-sg.id]
 	- nom de l'instance dans l'ihm aws : Web_Server_TRIGRAMME (TRIGRAMME : 1iere lettre prenom + 2 1iere lettre nom)
