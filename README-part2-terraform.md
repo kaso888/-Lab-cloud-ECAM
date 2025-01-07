@@ -188,7 +188,7 @@ resource "aws_security_group" "all-sg" {
 }
 ```
 
-- Lancer la commande terraform pour valider la configuration
+- Lancer la commande terraform pour visualier le plan d'exécution et faire les vérifications sur la création des ressources
 	- vous devriez avoir 4 ressources à créer
 - Une fois la validation effectuée, lancer la commande d'application de la configuration en confirmant l'action lorsque demandé
 - Se rendre sur la console AWS et constater l'apparition des nouvelles ressources
