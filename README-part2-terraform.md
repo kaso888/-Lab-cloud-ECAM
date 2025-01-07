@@ -7,8 +7,8 @@
 	- Protocole
 	- Port
 	- Réseau ou host Source / destination
-- Connaitre les commandes de base Terraform (cf cours précédent)
-- Connaitre la déclaration des ressources principales en Terraform (cf cours précédent)
+- Connaitre les commandes de base Terraform (cf cours du matin)
+- Connaitre la déclaration des ressources principales en Terraform (cf cours du matin)
 
 ## Objectifs du LAB
 - Déployer la même infrastructure du lab n°1 mais uniquement avec un outil de IaC (Terraform)
@@ -22,7 +22,9 @@
 
 ## Initialisation de l'environnement
 ### Mise en place de l'environnement Terraform
-- Dans le repository Gitlab, lancer l'outil gitpod
+- Si l'outil gitpod n'est pas intégré par défaut au compte gitlab
+  - aller dans user / preferences / integration et cocher "Enable gitpod integration"
+- Dans le repository Gitlab, lancer l'outil gitpod via le bouton "edit" puis "Open in Gitpod"
 - Accepter la connexion avec votre compte gitlab
 - Cliquer sur continue lorsque demandé
 - Vous devriez basculer sur une url du type https://ecamssg-lab-yanpngswo9n.ws-eu106.gitpod.io/
