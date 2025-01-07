@@ -292,7 +292,8 @@ Il peut être utilisé pour exposer des [sites web static](https://docs.aws.amaz
     - nom : `${PRENOM}-ecam-lab-s3`
     - Region `eu-west-3`
     - Décocher `Bloquer tous les accès publics` et cocher la case  `Je suis conscient, qu'avec les paramètres actuels, ce compartiment et les objets qu'il contient peuvent devenir publics.`
-- Accéder au compartiment et modifier la `Stratégie de compartiment` dans l'onglet `Autorisations`
+    - Cliquer sur le  bouton créer
+- Accéder au bucket s3, partie permission et modifier la `Stratégie de compartiment`( ajouter une policy)
     - Cela va permettre de rendre accessible les objets présents dans le bucket. 
     - Attention à remplacer `${PRENOM}`
 ```json
