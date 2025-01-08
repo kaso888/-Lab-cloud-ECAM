@@ -83,6 +83,7 @@ Le service permet d'utiliser sept moteurs : Amazon Aurora compatible avec MySQL,
         - Stockage alloué : 20Go
         - Dans *Connectivité*, Groupes de sécurité VPC existants : sélectionner `db-sg`
         - Dans le bloc *Configuration supplémentaire* (en dessous de *Surveillance*), Nom de la base de données initiale : `lab`
+        - Décocher l'option Sauvegarde automatiques !!
 - La création de l'instance va prendre 5/10 minutes. Passer à la suite.
 
 ## Création d'une VM pour l'application React via AWS EC2
