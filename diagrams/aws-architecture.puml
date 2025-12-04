@@ -1,0 +1,45 @@
+@startuml
+'Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+'SPDX-License-Identifier: MIT (For details, see https://github.com/awslabs/aws-icons-for-plantuml/blob/master/LICENSE)
+
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v14.0/dist
+!include AWSPuml/AWSCommon.puml
+!include AWSPuml/AWSSimplified.puml
+!include AWSPuml/Compute/EC2.puml
+!include AWSPuml/Compute/EC2Instance.puml
+!include AWSPuml/Database/RDS.puml
+!include AWSPuml/Groups/AWSCloud.puml
+!include AWSPuml/Groups/VPC.puml
+!include AWSPuml/Groups/AvailabilityZone.puml
+!include AWSPuml/Groups/PublicSubnet.puml
+!include AWSPuml/Groups/PrivateSubnet.puml
+!include AWSPuml/NetworkingContentDelivery/VPCNATGateway.puml
+!include AWSPuml/NetworkingContentDelivery/VPCInternetGateway.puml
+!include AWSPuml/General/Users.puml
+
+hide stereotype
+skinparam linetype ortho
+
+
+Users(users, "utilisateurs", "millions of users")
+
+AWSCloudGroup(cloud) {
+  VPCGroup(vpc) {
+
+    AvailabilityZoneGroup(az_1, "\tAvailability Zone 1\t") {
+      PublicSubnetGroup(az_1_public, "Public subnet") {
+
+        EC2Instance(ec2_web, "EC2 Web", "")
+        EC2Instance(ec2_api, "EC2 API", "")
+        RDS(rds, "RDS - MariaDB", "")
+      }
+    }
+
+    ec2_web --> ec2_api
+    ec2_api --> rds
+
+  }
+}
+
+users-->ec2_web
+@enduml

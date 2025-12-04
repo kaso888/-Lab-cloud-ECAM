@@ -1,0 +1,50 @@
+@startuml component
+!include <aws/common>
+!include <aws/Storage/AmazonS3/AmazonS3>
+!include <aws/Compute/AWSLambda/AWSLambda>
+!include <aws/Compute/AWSLambda/LambdaFunction/LambdaFunction>
+!include <aws/Database/AmazonDynamoDB/AmazonDynamoDB>
+!include <aws/Database/AmazonDynamoDB/table/table>
+
+
+!include <aws/common>
+!include <aws/ApplicationServices/AmazonAPIGateway/AmazonAPIGateway>
+!include <aws/Compute/AWSLambda/AWSLambda>
+!include <aws/Compute/AWSLambda/LambdaFunction/LambdaFunction>
+!include <aws/Database/AmazonDynamoDB/AmazonDynamoDB>
+!include <aws/Database/AmazonDynamoDB/table/table>
+!include <aws/General/AWScloud/AWScloud>
+!include <aws/General/client/client>
+!include <aws/General/user/user>
+!include <aws/SDKs/JavaScript/JavaScript>
+!include <aws/Storage/AmazonS3/AmazonS3>
+!include <aws/Storage/AmazonS3/bucket/bucket>
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v11.1/dist
+
+!includeurl AWSPuml/AWSCommon.puml
+
+!includeurl AWSPuml/SecurityIdentityCompliance/Cognito.puml
+
+
+
+USER(user) 
+CLIENT(browser, "React")
+
+AWSCLOUD(aws) {
+
+    AMAZONS3(s3) {
+        BUCKET(site,"fichier React")
+    }
+
+    AWSLAMBDA(lambda) {
+        LAMBDAFUNCTION(lambda_add,todos)
+    }
+}
+
+user - browser
+
+browser -> site
+
+browser -> lambda_add
+
+@enduml

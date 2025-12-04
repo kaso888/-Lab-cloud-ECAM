@@ -2,54 +2,7 @@
 
 ## Architecture
 
-```plantuml
-@startuml
-'Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-'SPDX-License-Identifier: MIT (For details, see https://github.com/awslabs/aws-icons-for-plantuml/blob/master/LICENSE)
-
-!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v14.0/dist
-!include AWSPuml/AWSCommon.puml
-!include AWSPuml/AWSSimplified.puml
-!include AWSPuml/Compute/EC2.puml
-!include AWSPuml/Compute/EC2Instance.puml
-!include AWSPuml/Database/RDS.puml
-!include AWSPuml/Groups/AWSCloud.puml
-!include AWSPuml/Groups/VPC.puml
-!include AWSPuml/Groups/AvailabilityZone.puml
-!include AWSPuml/Groups/PublicSubnet.puml
-!include AWSPuml/Groups/PrivateSubnet.puml
-!include AWSPuml/NetworkingContentDelivery/VPCNATGateway.puml
-!include AWSPuml/NetworkingContentDelivery/VPCInternetGateway.puml
-!include AWSPuml/General/Users.puml
-
-hide stereotype
-skinparam linetype ortho
-
-
-Users(users, "utilisateurs", "millions of users")
-
-AWSCloudGroup(cloud) {
-  VPCGroup(vpc) {
-
-    AvailabilityZoneGroup(az_1, "\tAvailability Zone 1\t") {
-      PublicSubnetGroup(az_1_public, "Public subnet") {
-
-        EC2Instance(ec2_web, "EC2 Web", "")
-        EC2Instance(ec2_api, "EC2 API", "")
-        RDS(rds, "RDS - MariaDB", "")
-      }
-    }
-
-    ec2_web --> ec2_api
-    ec2_api --> rds
-
-  }
-}
-
-users-->ec2_web
-@enduml
-
-```
+![Architecture AWS](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/kaso888/-Lab-cloud-ECAM/main/diagrams/aws-architecture.puml)
 
 - Sur `EC2 Web` : un serveur NGINX est déployé et écoute sur le port `80`. Il permet de :
     - Exposer les ressources React (html, js, css, etc.) lors de l'accès sur la racine du serveur
@@ -96,7 +49,7 @@ Le service permet d'utiliser sept moteurs : Amazon Aurora compatible avec MySQL,
 - Créer une instance EC2
 	- Nom : `${PRENOM}-web-ec2`
     - Image OS : `Ubuntu 24.04 LTS`
-	- Type d'instance : `t2.micro`
+	- Type d'instance : `t2.nano`
 	- Paire de clé : `admin-key`
 	- Groupe de sécurité (Pare-feu) : sélectionner le groupe existant `web-sg`
 - Après quelques minutes : l'instance est disponible
@@ -106,7 +59,7 @@ Le service permet d'utiliser sept moteurs : Amazon Aurora compatible avec MySQL,
 - Installation de l'application du serveur web NGINX et de l'application React
     - Depuis la page de l'instance, cliquer sur `Se connecter`
     - Sélectionner `EC2 Instance Connecter` puis cliquer sur `Se connecter`. Un terminal s'ouvre dans un nouvel onglet
-    - Exécuter le script d'installation : `curl https://gitlab.com/ecam-ssg/lab/-/raw/main/lab/web/init-vm-web.sh | bash`
+    - Exécuter le script d'installation : `curl https://raw.githubusercontent.com/kaso888/-Lab-cloud-ECAM/refs/heads/main/lab/web/init-vm-web.sh | bash`
     - Le script se termine avec `Web app started`
 - Vérifier son fonctionnement en accédant via un navigateur à `http://${DNS_IPV4_PUBLIC}` (attention : il faut enlever le `s` de `https`). Une application web de création de notes doit apparaitre. En haut, le schéma de l'architecture est présent : les blocs API et base de données sont en rouge. Les étapes suivantes vont permettre de faire fonctionner l'API et l'accès à la base de données.
 
@@ -119,7 +72,7 @@ Le service permet d'utiliser sept moteurs : Amazon Aurora compatible avec MySQL,
 - Créer une instance EC2
 	- Nom : `${PRENOM}-api-ec2`
     - Image OS : `Ubuntu 24.04 LTS`
-	- Type d'instance : `t2.micro`
+	- Type d'instance : `t2.nano`
 	- Paire de clé : `admin-key`
 	- Groupe de sécurité (Pare-feu) : sélectionner le groupe existant `api-sg`
 - Après quelques minutes : l'instance est disponible
@@ -129,7 +82,7 @@ Le service permet d'utiliser sept moteurs : Amazon Aurora compatible avec MySQL,
 - Installation de l'application API en GO
     - Depuis la page de l'instance, cliquer sur `Se connecter`
     - Sélectionner `EC2 Instance Connector` puis cliquer sur `Se connecter`. Un terminal s'ouvre dans un nouvel onglet
-    - Exécuter le script d'installation : `curl https://gitlab.com/ecam-ssg/lab/-/raw/main/lab/api/init-vm-api-maria.sh | bash`
+    - Exécuter le script d'installation : `curl https://raw.githubusercontent.com/kaso888/-Lab-cloud-ECAM/refs/heads/main/lab/api/init-vm-api-maria.sh | bash`
     - Le script se termine avec `API app created`
 
 ## Connexion des instances entre elles
@@ -189,58 +142,7 @@ Supprimer les ressources créées :
 
 ## Architecture
 
-```plantuml
-@startuml component
-!include <aws/common>
-!include <aws/Storage/AmazonS3/AmazonS3>
-!include <aws/Compute/AWSLambda/AWSLambda>
-!include <aws/Compute/AWSLambda/LambdaFunction/LambdaFunction>
-!include <aws/Database/AmazonDynamoDB/AmazonDynamoDB>
-!include <aws/Database/AmazonDynamoDB/table/table>
-
-
-!include <aws/common>
-!include <aws/ApplicationServices/AmazonAPIGateway/AmazonAPIGateway>
-!include <aws/Compute/AWSLambda/AWSLambda>
-!include <aws/Compute/AWSLambda/LambdaFunction/LambdaFunction>
-!include <aws/Database/AmazonDynamoDB/AmazonDynamoDB>
-!include <aws/Database/AmazonDynamoDB/table/table>
-!include <aws/General/AWScloud/AWScloud>
-!include <aws/General/client/client>
-!include <aws/General/user/user>
-!include <aws/SDKs/JavaScript/JavaScript>
-!include <aws/Storage/AmazonS3/AmazonS3>
-!include <aws/Storage/AmazonS3/bucket/bucket>
-!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v11.1/dist
-
-!includeurl AWSPuml/AWSCommon.puml
-
-!includeurl AWSPuml/SecurityIdentityCompliance/Cognito.puml
-
-
-
-USER(user) 
-CLIENT(browser, "React")
-
-AWSCLOUD(aws) {
-
-    AMAZONS3(s3) {
-        BUCKET(site,"fichier React")
-    }
-
-    AWSLAMBDA(lambda) {
-        LAMBDAFUNCTION(lambda_add,todos)
-    }
-}
-
-user - browser
-
-browser -> site
-
-browser -> lambda_add
-
-@enduml
-```
+![Architecture AWS](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/kaso888/-Lab-cloud-ECAM/main/diagrams/faas-architecture.puml)
 
 L'application à déployer est un multiplicateur :
 - Le site web static est exposé dans un bucket S3 public
