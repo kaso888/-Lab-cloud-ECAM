@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Values.web.name }}
+  name: {{ .Values.web.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.web.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.web.name }}
+    spec:
+      containers:
+      - image: localhost/lab-web:latest
+        name: {{ .Values.web.name }}
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/conf.d/default.conf
+          subPath: conf.d
+          readOnly: true
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: {{ .Values.web.name }}

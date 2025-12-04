@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Values.api.name }}
+  name: {{ .Values.api.name}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.api.name }}
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.api.name }}
+    spec:
+      containers:
+      - image: localhost/lab-api:latest
+        name: {{ .Values.api.name }}
+        imagePullPolicy: Never
+        volumeMounts:
+        - name: config
+          mountPath: "/properties.ini"
+          subPath: "properties.ini"
+          readOnly: true
+        ports:
+        - containerPort: 8080
+      volumes:
+        - name: config
+          configMap:
+            name: {{ .Values.api.name }}
+            items:
+            - key: "properties.ini"
+              path: "properties.ini"

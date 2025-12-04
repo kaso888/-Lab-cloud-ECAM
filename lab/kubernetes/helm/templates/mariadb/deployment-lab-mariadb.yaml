@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mariadb
+  name: mariadb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.bdd.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.bdd.name }}
+    spec:
+      containers:
+      - image: docker.io/library/mariadb:10.3
+        name: {{ .Values.bdd.name }}
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            value: mypass 
+          - name: MYSQL_USER
+            value: {{ .Values.bdd.user.name }} 
+          - name: MYSQL_PASSWORD
+            value: {{ .Values.bdd.user.password }}
+          - name: MYSQL_DATABASE
+            value: {{ .Values.bdd.schema }}
+        ports:
+        - containerPort: 3306
