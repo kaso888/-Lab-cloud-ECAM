@@ -4,6 +4,57 @@
 
 ![Architecture AWS](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/kaso888/-Lab-cloud-ECAM/main/diagrams/aws-architecture.puml)
 
+<details>
+<summary>Code PlantUML</summary>
+
+@startuml
+'Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+'SPDX-License-Identifier: MIT (For details, see https://github.com/awslabs/aws-icons-for-plantuml/blob/master/LICENSE)
+
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v14.0/dist
+!include AWSPuml/AWSCommon.puml
+!include AWSPuml/AWSSimplified.puml
+!include AWSPuml/Compute/EC2.puml
+!include AWSPuml/Compute/EC2Instance.puml
+!include AWSPuml/Database/RDS.puml
+!include AWSPuml/Groups/AWSCloud.puml
+!include AWSPuml/Groups/VPC.puml
+!include AWSPuml/Groups/AvailabilityZone.puml
+!include AWSPuml/Groups/PublicSubnet.puml
+!include AWSPuml/Groups/PrivateSubnet.puml
+!include AWSPuml/NetworkingContentDelivery/VPCNATGateway.puml
+!include AWSPuml/NetworkingContentDelivery/VPCInternetGateway.puml
+!include AWSPuml/General/Users.puml
+
+hide stereotype
+skinparam linetype ortho
+
+
+Users(users, "utilisateurs", "millions of users")
+
+AWSCloudGroup(cloud) {
+  VPCGroup(vpc) {
+
+    AvailabilityZoneGroup(az_1, "\tAvailability Zone 1\t") {
+      PublicSubnetGroup(az_1_public, "Public subnet") {
+
+        EC2Instance(ec2_web, "EC2 Web", "")
+        EC2Instance(ec2_api, "EC2 API", "")
+        RDS(rds, "RDS - MariaDB", "")
+      }
+    }
+
+    ec2_web --> ec2_api
+    ec2_api --> rds
+
+  }
+}
+
+users-->ec2_web
+@enduml
+
+</details>
+
 - Sur `EC2 Web` : un serveur NGINX est déployé et écoute sur le port `80`. Il permet de :
     - Exposer les ressources React (html, js, css, etc.) lors de l'accès sur la racine du serveur
     - Jouer le rôle de reverse proxy pour les API : les appels sur le `\api` sont routées vers l'instance `EC2 API` sur le port `8080`
@@ -143,6 +194,62 @@ Supprimer les ressources créées :
 ## Architecture
 
 ![Architecture AWS](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/kaso888/-Lab-cloud-ECAM/main/diagrams/faas-architecture.puml)
+
+<details>
+<summary>Code PlantUML</summary>
+
+@startuml component
+!include <aws/common>
+!include <aws/Storage/AmazonS3/AmazonS3>
+!include <aws/Compute/AWSLambda/AWSLambda>
+!include <aws/Compute/AWSLambda/LambdaFunction/LambdaFunction>
+!include <aws/Database/AmazonDynamoDB/AmazonDynamoDB>
+!include <aws/Database/AmazonDynamoDB/table/table>
+
+
+!include <aws/common>
+!include <aws/ApplicationServices/AmazonAPIGateway/AmazonAPIGateway>
+!include <aws/Compute/AWSLambda/AWSLambda>
+!include <aws/Compute/AWSLambda/LambdaFunction/LambdaFunction>
+!include <aws/Database/AmazonDynamoDB/AmazonDynamoDB>
+!include <aws/Database/AmazonDynamoDB/table/table>
+!include <aws/General/AWScloud/AWScloud>
+!include <aws/General/client/client>
+!include <aws/General/user/user>
+!include <aws/SDKs/JavaScript/JavaScript>
+!include <aws/Storage/AmazonS3/AmazonS3>
+!include <aws/Storage/AmazonS3/bucket/bucket>
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v11.1/dist
+
+!includeurl AWSPuml/AWSCommon.puml
+
+!includeurl AWSPuml/SecurityIdentityCompliance/Cognito.puml
+
+
+
+USER(user) 
+CLIENT(browser, "React")
+
+AWSCLOUD(aws) {
+
+    AMAZONS3(s3) {
+        BUCKET(site,"fichier React")
+    }
+
+    AWSLAMBDA(lambda) {
+        LAMBDAFUNCTION(lambda_add,todos)
+    }
+}
+
+user - browser
+
+browser -> site
+
+browser -> lambda_add
+
+@enduml
+
+</details>
 
 L'application à déployer est un multiplicateur :
 - Le site web static est exposé dans un bucket S3 public

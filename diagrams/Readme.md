@@ -7,7 +7,7 @@ Ce dossier contient les diagrammes PlantUML utilisés dans la documentation.
 Les diagrammes sont rendus automatiquement dans GitHub en utilisant le serveur PlantUML public :
 
 ```markdown
-![Nom du diagramme](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/yoann2968/enib-cloud/main/diagrams/nom-du-fichier.puml)
+![Nom du diagramme](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/kaso888/-Lab-cloud-ECAM/main/diagrams/nom-du-fichier.puml)
 ```
 
 ## Fichiers
