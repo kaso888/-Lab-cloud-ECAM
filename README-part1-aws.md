@@ -84,7 +84,7 @@ Le service permet d'utiliser sept moteurs : Amazon Aurora compatible avec MySQL,
     - Informations
         - Identifiant d'instance de base de données : `${PRENOM}-db`
         - Mode : création standard
-        - Moteur : version la plus récente (11.4.4) de MariaDB
+        - Moteur : version la plus récente (11.4.13) de MariaDB
         - Modèle : **Offre gratuite** - db.t4g.micro
         - Identifiant principal : `admin`
         - Mot de passe : `Ecam123!`
@@ -104,7 +104,7 @@ Le service permet d'utiliser sept moteurs : Amazon Aurora compatible avec MySQL,
 - Créer une instance EC2
 	- Nom : `${PRENOM}-web-ec2`
     - Image OS : `Ubuntu 24.04 LTS`
-	- Type d'instance : `t2.nano`
+	- Type d'instance : `t3.micro`
 	- Paire de clé : `admin-key`
 	- Groupe de sécurité (Pare-feu) : sélectionner le groupe existant `web-sg`
 - Après quelques minutes : l'instance est disponible
@@ -127,7 +127,7 @@ Le service permet d'utiliser sept moteurs : Amazon Aurora compatible avec MySQL,
 - Créer une instance EC2
 	- Nom : `${PRENOM}-api-ec2`
     - Image OS : `Ubuntu 24.04 LTS`
-	- Type d'instance : `t2.nano`
+	- Type d'instance : `t3.micro`
 	- Paire de clé : `admin-key`
 	- Groupe de sécurité (Pare-feu) : sélectionner le groupe existant `api-sg`
 - Après quelques minutes : l'instance est disponible
@@ -267,8 +267,8 @@ L'application à déployer est un multiplicateur :
 - Accéder au [service Lambda](https://eu-west-3.console.aws.amazon.com/lambda/home?region=eu-west-3#/functions) via la console AWS
 - Créer une première fonction
     - nom : `${PRENOM}-add-lambda`
-    - Techno : `Node.js 20.x`
-    - Role : utiliser un role existant : `add-lambda-role-5wn8pt93`
+    - Techno : `Node.js 22.x`
+    - Role : utiliser un role existant : `yoann-add-lambda-role-mk5nebhr`
     - Dans paramètres avancés, activer `Activer l'URL de fonction` avec l'authentification `NONE` afin d'avoir accès à la fonction depuis un navigateur
 - Depuis la page de la fonction, 
     - Récupérer l'`URL de fonction`
